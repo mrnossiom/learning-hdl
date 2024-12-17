@@ -2,7 +2,7 @@ entity or_gate is
   port (
     a, b : in bit;
     q : out bit
-  );  
+  );
 end entity;
 
 architecture structural of or_gate is
@@ -23,7 +23,7 @@ architecture behavior of or_gate_tb is
   signal a, b, q : bit;
 begin
   or_0: entity work.or_gate(structural) port map (a => a, b => b, q => q);
-  
+
   process is
   begin
     a <= '0', '1' after 2 ns;

@@ -4,3 +4,7 @@ standard = "2008"
 first_cpu.files = [
   "first-cpu/*.vhd",
 ]
+
+nand_to_basics.files = [
+  "nand_to_basics/src/*.vhd",
+]

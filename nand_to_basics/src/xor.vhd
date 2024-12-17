@@ -2,7 +2,7 @@ entity xor_gate is
   port (
     a, b : in bit;
     q : out bit
-  );  
+  );
 end entity;
 
 architecture structural of xor_gate is
@@ -26,7 +26,7 @@ architecture behavior of xor_gate_tb is
   signal a, b, q : bit;
 begin
   xor_0: entity work.xor_gate(structural) port map (a => a, b => b, q => q);
-  
+
   process is
   begin
     a <= '0', '1' after 2 ns;

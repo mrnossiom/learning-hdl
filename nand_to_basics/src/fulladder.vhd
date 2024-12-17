@@ -34,7 +34,7 @@ begin
       i0, i1, ci : bit;
       s, co : bit;
     end record;
-  
+
   type pattern_array is array (natural range <>) of pattern_type;
 
   constant patterns : pattern_array :=

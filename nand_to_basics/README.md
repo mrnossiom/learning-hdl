@@ -78,9 +78,9 @@ This project contain code for the following gates:
   - `memory`
   - `computer`
 
-# Ressources
+# Resources
 
+- https://www.nand2tetris.org
 - https://fpgatutorial.com
 - http://ghdl.free.fr/site/uploads/Main/ghdl_user_guide/AA_ghdl_guide.html
 - https://vhdlwhiz.com
-- https://www.nand2tetris.org
