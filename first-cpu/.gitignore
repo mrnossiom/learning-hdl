@@ -1,0 +1,10 @@
+# Workfile (GHDL)
+*-obj*.cf
+
+# Netlist files
+*.netlist.json
+*.netlist.svg
+
+# Waveform files
+*.vcf
+*.ghw
