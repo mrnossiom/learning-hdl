@@ -34,6 +34,8 @@
         {
           default = pkgs.mkShell {
             packages = with pkgs; [
+              just
+
               ghdl
               gtkwave
               (yosys.withPlugins [ yosys-ghdl ])

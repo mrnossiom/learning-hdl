@@ -1,0 +1,34 @@
+_default:
+	@just --list --unsorted --list-heading '' --list-prefix '—— '
+
+ghdl_flags := "--std=08"
+
+# order matters
+sources := "\
+types.vhd \
+alu.vhd \
+alu_tb.vhd \
+rom.vhd \
+rom_tb.vhd \
+accumulator.vhd"
+
+# pc.vhd \
+# ext_reg.vhd \
+# flags_reg.vhd \
+# control.vhd
+
+analyze *args:
+	ghdl analyze {{ghdl_flags}} {{sources}} {{args}}
+
+run entity *args: analyze
+	ghdl elab-run {{ghdl_flags}} {{entity}} {{args}} --vcd={{entity}}.vcf
+
+synsthesize entity *args: analyze
+	yosys -p 'ghdl {{ghdl_flags}} {{sources}} -e {{entity}}; write_json {{entity}}.netlist.json'
+	netlistsvg {{entity}}.netlist.json -o {{entity}}.netlist.svg
+	open {{entity}}.netlist.svg
+
+clean:
+	@rm -vf work-obj08.cf
+	@rm -vf *.vcf *.ghw
+	@rm -vf *.netlist.svg

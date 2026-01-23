@@ -16,7 +16,7 @@ ghdl elab-run entity_name --vcd=name.vcf
 gtkwave name.vcd
 
 # use yosys to analyze component
-yosys -m ghdl -p 'ghdl src/name.vhdl -e entity_name; write_json entity_name.netlist.json'
+yosys -m ghdl -p 'ghdl src/name.vhd -e entity_name; write_json entity_name.netlist.json'
 netlistsvg entity_name.netlist.json -o entity_name.svg
 ```
 

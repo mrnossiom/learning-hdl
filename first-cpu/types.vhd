@@ -1,59 +1,48 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
-package custom_cpu_types is
-  type alu_op_t is (
-    OP_ADD, OP_SUB, OP_MUL,
+package types is
+  type memory is range 0 to 1E10
+    units
+      b;
+      kb = 1000 b;
+      mb = 1000 kb;
+      gb = 1000 mb;
+      kib = 1024 b;
+      mib = 1024 kib;
+      gib = 1024 mib;
+    end units;
 
-    OP_AND, OP_XOR,
-    -- left/right shift and their carry counterparts
-    OP_LS, OP_RS, OP_CLS, OP_CRS,
-    -- arithmetic right shift
-    OP_ASR,
-    OP_INC, OP_DEC,
-    OP_UNKNOWN
-  );
+  function mem_high_addr(m : memory) return natural;
 
-  function from_alu_op(s : alu_op_t) return std_logic_vector;
-  function to_alu_op(s : std_logic_vector(3 downto 0)) return alu_op_t;
+  ---
+
+  subtype alu_op is std_logic_vector(3 downto 0);
+  constant alu_op_add : alu_op := alu_op(to_unsigned(1, 4));
+  constant alu_op_sub : alu_op := alu_op(to_unsigned(2, 4));
+  constant alu_op_mul : alu_op := alu_op(to_unsigned(3, 4));
+  constant alu_op_and : alu_op := alu_op(to_unsigned(4, 4));
+  constant alu_op_xor : alu_op := alu_op(to_unsigned(5, 4));
+  -- left/right shift and their car0ry counterparts
+  constant alu_op_ls : alu_op := alu_op(to_unsigned(6, 4));
+  constant alu_op_rs : alu_op := alu_op(to_unsigned(7, 4));
+  constant alu_op_cls : alu_op := alu_op(to_unsigned(8, 4));
+  constant alu_op_crs : alu_op := alu_op(to_unsigned(9, 4));
+  -- arithmetic right shift
+  constant alu_op_asr : alu_op := alu_op(to_unsigned(10, 4));
+  constant alu_op_inc : alu_op := alu_op(to_unsigned(11, 4));
+  constant alu_op_dec : alu_op := alu_op(to_unsigned(12, 4));
+
+  subtype cpu_addr is std_logic_vector(7 downto 0);
+
+  subtype cpu_word is std_logic_vector(7 downto 0);
+  subtype cpu_bit_word is bit_vector(7 downto 0);
 end package;
 
-package body custom_cpu_types is
-  function to_alu_op(s : std_logic_vector(3 downto 0)) return alu_op_t is
+package body types is
+  function mem_high_addr(m : memory) return natural is
   begin
-    case s is
-      when "0000" => return OP_ADD;
-      when "0001" => return OP_SUB;
-      when "0010" => return OP_MUL;
-      when "0011" => return OP_AND;
-      when "0100" => return OP_XOR;
-      when "0101" => return OP_LS;
-      when "0110" => return OP_RS;
-      when "1000" => return OP_CLS;
-      when "0111" => return OP_CRS;
-      when "1001" => return OP_ASR;
-      when "1010" => return OP_INC;
-      when "1011" => return OP_DEC;
-      when others => return OP_UNKNOWN;
-    end case;
-  end function;
-
-  function from_alu_op(s : alu_op_t) return std_logic_vector is
-  begin
-    case s is
-      when OP_ADD => return "0000";
-      when OP_SUB => return "0001";
-      when OP_MUL => return "0010";
-      when OP_AND => return "0011";
-      when OP_XOR => return "0100";
-      when OP_LS => return "0101";
-      when OP_RS => return "0110";
-      when OP_CLS => return "1000";
-      when OP_CRS => return "0111";
-      when OP_ASR => return "1001";
-      when OP_INC => return "1010";
-      when OP_DEC => return "1011";
-      when OP_UNKNOWN => report "unreachable";
-    end case;
+    return (m / 1 b) - 1;
   end function;
 end package body;

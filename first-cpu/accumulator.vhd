@@ -1,5 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use work.types.all;
 
 entity accumulator is
   port (
@@ -8,17 +9,17 @@ entity accumulator is
     output_en : in std_logic;
     write_en : in std_logic;
     acc_sel : in std_logic;
-    alu_in : in std_logic_vector(7 downto 0);
-    bus_in : in std_logic_vector(7 downto 0);
+    alu_in : in cpu_word;
+    bus_in : in cpu_word;
 
-    acc : out std_logic_vector(7 downto 0);
-    bus_out : out std_logic_vector(7 downto 0)
+    acc : out cpu_word;
+    bus_out : out cpu_word
   );
 end entity;
 
 architecture rtl of accumulator is
-  signal acc_value : std_logic_vector(7 downto 0) := (others => '0');
-  signal next_acc : std_logic_vector(7 downto 0);
+  signal acc_value : cpu_word := (others => '0');
+  signal next_acc : cpu_word;
 begin
   next_acc <= alu_in when acc_sel else bus_in;
 

@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use work.custom_cpu_types.all;
+
+use work.types.all;
 
 entity alu_tb is
 end entity;
@@ -26,11 +27,11 @@ begin
 
   process
   begin
-    acc <= x"01"; bus_in <= x"01"; alu_op <= from_alu_op(OP_ADD); wait for 10 ns;
+    acc <= x"01"; bus_in <= x"01"; alu_op <= alu_op_add; wait for 10 fs;
     assert (result = x"02") report "addition failed";
 
-    acc <= x"01"; bus_in <= x"01"; alu_op <= from_alu_op(OP_SUB); wait for 10 ns;
-    assert (result = x"02") report "substraction failed";
+    acc <= x"01"; bus_in <= x"01"; alu_op <= alu_op_sub; wait for 10 fs;
+    assert (result = x"00") report "substraction failed";
 
     report "simulation ended" severity note;
     wait;
