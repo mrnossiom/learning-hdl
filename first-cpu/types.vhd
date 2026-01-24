@@ -19,20 +19,20 @@ package types is
   ---
 
   subtype alu_op is std_logic_vector(3 downto 0);
-  constant alu_op_add : alu_op := alu_op(to_unsigned(1, 4));
-  constant alu_op_sub : alu_op := alu_op(to_unsigned(2, 4));
-  constant alu_op_mul : alu_op := alu_op(to_unsigned(3, 4));
-  constant alu_op_and : alu_op := alu_op(to_unsigned(4, 4));
-  constant alu_op_xor : alu_op := alu_op(to_unsigned(5, 4));
+  constant alu_op_add : alu_op := x"1";
+  constant alu_op_sub : alu_op := x"2";
+  constant alu_op_mul : alu_op := x"3";
+  constant alu_op_and : alu_op := x"4";
+  constant alu_op_xor : alu_op := x"5";
   -- left/right shift and their car0ry counterparts
-  constant alu_op_ls : alu_op := alu_op(to_unsigned(6, 4));
-  constant alu_op_rs : alu_op := alu_op(to_unsigned(7, 4));
-  constant alu_op_cls : alu_op := alu_op(to_unsigned(8, 4));
-  constant alu_op_crs : alu_op := alu_op(to_unsigned(9, 4));
+  constant alu_op_ls : alu_op := x"6";
+  constant alu_op_rs : alu_op := x"7";
+  constant alu_op_cls : alu_op := x"8";
+  constant alu_op_crs : alu_op := x"9";
   -- arithmetic right shift
-  constant alu_op_asr : alu_op := alu_op(to_unsigned(10, 4));
-  constant alu_op_inc : alu_op := alu_op(to_unsigned(11, 4));
-  constant alu_op_dec : alu_op := alu_op(to_unsigned(12, 4));
+  constant alu_op_asr : alu_op := x"A";
+  constant alu_op_inc : alu_op := x"B";
+  constant alu_op_dec : alu_op := x"C";
 
   subtype cpu_addr is std_logic_vector(7 downto 0);
 

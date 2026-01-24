@@ -89,7 +89,7 @@ impl Rn {
         Self(n)
     }
 
-    fn rn(&self) -> u8 {
+    fn num(&self) -> u8 {
         self.0
     }
 }
@@ -175,7 +175,7 @@ impl Instruction {
     fn emit(&self, labels: &BTreeMap<String, usize>) -> u8 {
         fn instr_op_rn(op: u8, rn: &Rn) -> u8 {
             assert!(op < 0x10, "op should be 4 bits or less");
-            (op << 4) | rn.rn()
+            (op << 4) | rn.num()
         }
 
         match self {
