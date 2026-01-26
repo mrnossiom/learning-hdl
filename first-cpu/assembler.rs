@@ -72,21 +72,20 @@ impl Assembly {
             .open(path)?;
 
         for instr in &self.instrs {
-            writeln!(file, "{:08b}", instr.emit(&self.labels))?;
+            writeln!(file, "{:08b}", instr.emit(&self.labels)?)?;
         }
 
         Ok(())
     }
 }
 
-/// Register number
+/// Register number limited to 2^4 register
 #[derive(Debug, Clone, Copy)]
 struct Rn(u8);
 
 impl Rn {
-    fn new(n: u8) -> Self {
-        assert!(n < 0xF0, "register number is only 4 bits");
-        Self(n)
+    fn new(n: u8) -> Option<Self> {
+        (n >> 4 == 0).then_some(Self(n))
     }
 
     fn num(&self) -> u8 {
@@ -97,29 +96,59 @@ impl Rn {
 impl std::str::FromStr for Rn {
     type Err = MudError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self::new(s.parse()?))
+        let Some(num) = s.strip_prefix('r') else {
+            return Err("register should start with an `r`".into());
+        };
+        let Some(rn) = Self::new(num.parse()?) else {
+            return Err("register number is out of range".into());
+        };
+        Ok(rn)
     }
 }
 
 #[derive(Debug, Clone, Copy)]
-struct Imm4(u8);
+struct Imm<const N: usize>(u32);
 
-impl Imm4 {
-    fn new(imm: u8) -> Self {
-        assert!(imm < 0x10, "immediate is only 4 bits");
-        Self(imm)
+type Imm4 = Imm<4>;
+
+impl<const N: usize> Imm<N> {
+    fn new(imm: u32) -> Option<Self> {
+        (imm >> N == 0).then_some(Self(imm))
     }
 
-    fn imm(&self) -> u8 {
+    fn value(&self) -> u32 {
         self.0
+    }
+}
+
+impl<const N: usize> std::str::FromStr for Imm<N> {
+    type Err = MudError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let bytes = s.as_bytes();
+
+        let raw_value = if let Some(b'0') = bytes.get(0) {
+            let radix = match bytes.get(1) {
+                Some(b'x') => 16,
+                Some(b'o') => 8,
+                Some(b'b') => 2,
+                Some(_) => return Err("immediate radix specifier is invalid".into()),
+                None => return Err("immediate radix specifier must be followed by a value".into()),
+            };
+            u32::from_str_radix(&s[2..], radix)?
+        } else {
+            u32::from_str_radix(&s, 10)?
+        };
+
+        let Some(imm) = Self::new(raw_value) else {
+            return Err(format!("value doesn't fit immediate of size `{}`", N).into());
+        };
+        Ok(imm)
     }
 }
 
 #[derive(Debug, Clone)]
 enum Instruction {
-    Nop,
-    Halt,
-
+    // Reg
     Add(Rn),
     Sub(Rn),
     Mul(Rn),
@@ -130,26 +159,32 @@ enum Instruction {
     CopyToAcc(Rn),
     CopyFromAcc(Rn),
 
+    Cmp(Rn),
+
+    // Imm
+    Branch(String),
+    Beq(String),
+
+    LoadLowerImmediate(Imm4),
+    LoadUpperImmediate(Imm4),
+
+    // Custom
+    Nop,
     Inc,
     Dec,
-
-    Cmp(Rn),
-    Beq(String),
-    Branch(String),
+    Halt,
 }
 
 impl Instruction {
     fn parse(instr: &str) -> MudResult<Self> {
         let (mnemonic, operands) = if let Some((mnemonic, operands)) = instr.split_once(' ') {
-            (mnemonic, operands.split(',').collect::<Vec<_>>())
+            (mnemonic, operands.trim().split(',').collect::<Vec<_>>())
         } else {
             (instr, Vec::new())
         };
 
         let instr = match (mnemonic, operands.as_slice()) {
-            ("nop", []) => Instruction::Nop,
-            ("halt", []) => Instruction::Halt,
-
+            // Reg
             ("add", [rn]) => Instruction::Add(rn.parse()?),
             ("sub", [rn]) => Instruction::Sub(rn.parse()?),
             ("mul", [rn]) => Instruction::Mul(rn.parse()?),
@@ -160,59 +195,80 @@ impl Instruction {
             ("cp", [rn, "acc"]) => Instruction::CopyToAcc(rn.parse()?),
             ("cp", ["acc", rn]) => Instruction::CopyFromAcc(rn.parse()?),
 
+            ("cmp", [rn]) => Instruction::Cmp(rn.parse()?),
+
+            // Imm
+            ("b", [label]) => Instruction::Branch(label.to_string()),
+            ("beq", [label]) => Instruction::Beq(label.to_string()),
+
+            ("lli", [imm4]) => Instruction::LoadLowerImmediate(imm4.parse()?),
+            ("lui", [imm4]) => Instruction::LoadUpperImmediate(imm4.parse()?),
+
+            // Custom
+            ("nop", []) => Instruction::Nop,
             ("inc", []) => Instruction::Inc,
             ("dec", []) => Instruction::Dec,
+            ("halt", []) => Instruction::Halt,
 
-            ("cmp", [rn]) => Instruction::Cmp(rn.parse()?),
-            ("beq", [label]) => Instruction::Beq(label.to_string()),
-            ("b", [label]) => Instruction::Branch(label.to_string()),
             _ => return Err(format!("incorrect format for `{mnemonic}`").into()),
         };
 
         Ok(instr)
     }
 
-    fn emit(&self, labels: &BTreeMap<String, usize>) -> u8 {
-        fn instr_op_rn(op: u8, rn: &Rn) -> u8 {
-            assert!(op < 0x10, "op should be 4 bits or less");
-            (op << 4) | rn.num()
+    fn emit(&self, labels: &BTreeMap<String, usize>) -> MudResult<u8> {
+        fn instr_opcode_rn(opcode: u8, rn: &Rn) -> u8 {
+            assert!(opcode >> 4 == 0, "opcode should be 4 bits or less");
+            (opcode << 4) | rn.num()
+        }
+        fn instr_opcode_imm4(opcode: u8, imm4: &Imm4) -> u8 {
+            assert!(opcode >> 4 == 0, "opcode should be 4 bits or less");
+            (opcode << 4) | imm4.value() as u8
         }
 
-        match self {
-            Instruction::Nop => 0x00,
+        let encoded = match self {
+            // Reg
+            Instruction::Add(rn) => instr_opcode_rn(0x0, rn),
+            Instruction::Sub(rn) => instr_opcode_rn(0x1, rn),
+            Instruction::Mul(rn) => instr_opcode_rn(0x2, rn),
+            Instruction::And(rn) => instr_opcode_rn(0x3, rn),
+            Instruction::Or(rn) => instr_opcode_rn(0x4, rn),
+            Instruction::Xor(rn) => instr_opcode_rn(0x5, rn),
 
-            Instruction::Add(rn) => instr_op_rn(0x1, rn),
-            Instruction::Sub(rn) => instr_op_rn(0x2, rn),
-            Instruction::Mul(rn) => instr_op_rn(0x3, rn),
-            Instruction::And(rn) => instr_op_rn(0x4, rn),
-            Instruction::Or(rn) => instr_op_rn(0x5, rn),
-            Instruction::Xor(rn) => instr_op_rn(0x6, rn),
+            Instruction::CopyToAcc(rn) => instr_opcode_rn(0x8, rn),
+            Instruction::CopyFromAcc(rn) => instr_opcode_rn(0x9, rn),
 
-            Instruction::CopyToAcc(rn) => instr_op_rn(0x9, rn),
-            Instruction::CopyFromAcc(rn) => instr_op_rn(0xA, rn),
+            Instruction::Cmp(rn) => instr_opcode_rn(0xA, rn),
 
-            Instruction::Inc => 0x06,
-            Instruction::Dec => 0x07,
-
-            Instruction::Cmp(rn) => instr_op_rn(0x7, rn),
+            // Imm
             Instruction::Beq(label) => {
-                let address = *labels.get(label).expect("could not find label");
-                if address >= 0x10 {
-                    todo!("address range is too far")
-                }
-
-                0x80 | address as u8
+                let Some(address) = labels.get(label).copied() else {
+                    return Err("could not find label".into());
+                };
+                let Some(address) = Imm4::new(address as u32) else {
+                    return Err("address range is too far".into());
+                };
+                instr_opcode_imm4(0xB, &address)
             }
             Instruction::Branch(label) => {
-                let address = *labels.get(label).expect("could not find label");
-                if address >= 0x10 {
-                    todo!("address range is too far")
-                }
-
-                0x90 | address as u8
+                let Some(address) = labels.get(label).copied() else {
+                    return Err("could not find label".into());
+                };
+                let Some(address) = Imm4::new(address as u32) else {
+                    return Err("address range is too far".into());
+                };
+                instr_opcode_imm4(0xC, &address)
             }
 
+            Instruction::LoadLowerImmediate(imm4) => instr_opcode_imm4(0xD, imm4),
+            Instruction::LoadUpperImmediate(imm4) => instr_opcode_imm4(0xE, imm4),
+
+            Instruction::Nop => 0xF0,
+            Instruction::Inc => 0xF1,
+            Instruction::Dec => 0xF2,
             Instruction::Halt => 0xFF,
-        }
+        };
+
+        Ok(encoded)
     }
 }

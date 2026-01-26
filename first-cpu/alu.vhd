@@ -58,7 +58,7 @@ begin
         alu_carry <= res_9bit(8);
 
       when others =>
-        report "unexpected alu_op" severity error;
+        report "illegal alu operation" severity failure;
     end case;
   end process;
 end architecture;

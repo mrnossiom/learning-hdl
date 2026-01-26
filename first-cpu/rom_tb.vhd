@@ -1,3 +1,5 @@
+use std.env.all;
+
 library ieee;
 use ieee.std_logic_1164.all;
 
@@ -36,7 +38,6 @@ begin
     address <= x"22"; wait for 10 ns;
     report to_hex_string(data);
 
-    report "simulation ended" severity note;
-    wait;
+    stop;
   end process;
 end architecture;
