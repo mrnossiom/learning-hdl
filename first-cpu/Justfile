@@ -9,23 +9,22 @@ types.vhd \
 alu.vhd \
 rom.vhd \
 accumulator.vhd \
+control.vhd \
+regfile.vhd \
+cpu.vhd \
 "
-
-# pc.vhd \
-# ext_reg.vhd \
-# flags_reg.vhd \
-# control.vhd
 
 tb_sources := "\
 alu_tb.vhd \
 rom_tb.vhd \
+cpu_tb.vhd \
 "
 
 analyze *args:
 	ghdl analyze {{ghdl_flags}} {{sources}} {{tb_sources}} {{args}}
 
 run entity *args: analyze
-	ghdl elab-run {{ghdl_flags}} {{entity}} {{args}} --vcd={{entity}}.vcf
+	ghdl elab-run {{ghdl_flags}} {{entity}} {{args}} --wave={{entity}}.ghw
 
 synsthesize entity *args:
 	yosys -p 'ghdl {{ghdl_flags}} {{sources}} -e {{entity}}; opt; show'

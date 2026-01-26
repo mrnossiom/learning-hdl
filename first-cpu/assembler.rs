@@ -1,5 +1,6 @@
 #!/usr/bin/env -S cargo +nightly -Zscript
 ---
+package.edition = "2024"
 [dependencies]
 clap = { version = "4", features = ["derive"] }
 ---
@@ -266,7 +267,7 @@ impl Instruction {
             Instruction::Nop => 0xF0,
             Instruction::Inc => 0xF1,
             Instruction::Dec => 0xF2,
-            Instruction::Halt => 0xFF,
+            Instruction::Halt => 0xF7,
         };
 
         Ok(encoded)

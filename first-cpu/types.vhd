@@ -18,25 +18,28 @@ package types is
 
   ---
 
-  subtype alu_op is std_logic_vector(3 downto 0);
-  constant alu_op_add : alu_op := b"0000";
-  constant alu_op_sub : alu_op := b"0001";
-  constant alu_op_mul : alu_op := b"0010";
-  constant alu_op_and : alu_op := b"0011";
-  constant alu_op_or  : alu_op := b"0100";
-  constant alu_op_xor : alu_op := b"0101";
+  subtype cpu_alu_op is std_logic_vector(3 downto 0);
+  constant ALU_OP_ADD : cpu_alu_op := b"0000";
+  constant ALU_OP_SUB : cpu_alu_op := b"0001";
+  constant ALU_OP_MUL : cpu_alu_op := b"0010";
+  constant ALU_OP_AND : cpu_alu_op := b"0011";
+  constant ALU_OP_OR  : cpu_alu_op := b"0100";
+  constant ALU_OP_XOR : cpu_alu_op := b"0101";
 
   -- left/right shift and their carry counterparts
-  constant alu_op_ls  : alu_op := b"1000";
-  constant alu_op_rs  : alu_op := b"1001";
-  constant alu_op_cls : alu_op := b"1010";
-  constant alu_op_crs : alu_op := b"1011";
+  constant ALU_OP_LS  : cpu_alu_op := b"1000";
+  constant ALU_OP_RS  : cpu_alu_op := b"1001";
+  constant ALU_OP_CLS : cpu_alu_op := b"1010";
+  constant ALU_OP_CRS : cpu_alu_op := b"1011";
   -- arithmetic right shift
-  constant alu_op_asr : alu_op := b"1100";
-  constant alu_op_inc : alu_op := b"1101";
-  constant alu_op_dec : alu_op := b"1110";
+  constant ALU_OP_ASR : cpu_alu_op := b"1100";
+  constant ALU_OP_INC : cpu_alu_op := b"1101";
+  constant ALU_OP_DEC : cpu_alu_op := b"1110";
 
   subtype cpu_addr is std_logic_vector(7 downto 0);
+
+  -- register number
+  subtype cpu_rn is std_logic_vector(3 downto 0);
 
   subtype cpu_word is std_logic_vector(7 downto 0);
   subtype cpu_bit_word is bit_vector(7 downto 0);
@@ -45,22 +48,38 @@ package types is
   subtype cpu_instr_opcode is std_logic_vector(7 downto 4);
 
   -- Reg
-  constant instr_opcode_alu_rn    : cpu_instr_opcode := b"0ZZZ";
-  constant instr_opcode_cp_acc_rn : cpu_instr_opcode := b"1000";
-  constant instr_opcode_cp_rn_acc : cpu_instr_opcode := b"1001";
-  constant instr_opcode_cmp_rn    : cpu_instr_opcode := b"1010";
+  constant INSTR_OPCODE_ALU_MASK  : cpu_instr_opcode := b"0ZZZ";
+  constant INSTR_OPCODE_ADD_RN    : cpu_instr_opcode := b"0000";
+  constant INSTR_OPCODE_SUB_RN    : cpu_instr_opcode := b"0001";
+  constant INSTR_OPCODE_MUL_RN    : cpu_instr_opcode := b"0010";
+  constant INSTR_OPCODE_AND_RN    : cpu_instr_opcode := b"0011";
+  constant INSTR_OPCODE_OR_RN     : cpu_instr_opcode := b"0100";
+  constant INSTR_OPCODE_XOR_RN    : cpu_instr_opcode := b"0101";
+
+  constant INSTR_OPCODE_CP_ACC_RN : cpu_instr_opcode := b"1000";
+  constant INSTR_OPCODE_CP_RN_ACC : cpu_instr_opcode := b"1001";
+  constant INSTR_OPCODE_CMP_RN    : cpu_instr_opcode := b"1010";
 
   -- Imm
-  constant instr_opcode_branch  : cpu_instr_opcode := b"1011";
-  constant instr_opcode_beq     : cpu_instr_opcode := b"1100";
-  constant instr_opcode_lli_imm : cpu_instr_opcode := b"1101";
-  constant instr_opcode_lui_imm : cpu_instr_opcode := b"1110";
+  constant INSTR_OPCODE_BRANCH  : cpu_instr_opcode := b"1011";
+  constant INSTR_OPCODE_BEQ     : cpu_instr_opcode := b"1100";
+  constant INSTR_OPCODE_LLI_IMM : cpu_instr_opcode := b"1101";
+  constant INSTR_OPCODE_LUI_IMM : cpu_instr_opcode := b"1110";
 
-  constant instr_opcode_custom : cpu_instr_opcode := b"1111";
+  -- Custom
+  constant INSTR_OPCODE_CUSTOM   : cpu_instr_opcode := b"1111";
 
-  constant instr_custom_alu  : cpu_instr_opcode := b"1ZZZ";
-  constant instr_custom_nop  : cpu_instr_opcode := b"0000";
-  constant instr_custom_halt : cpu_instr_opcode := b"0111";
+  constant INSTR_CUSTOM_ALU_MASK : cpu_instr_opcode := b"1ZZZ";
+  constant INSTR_CUSTOM_LS       : cpu_instr_opcode := b"1000";
+  constant INSTR_CUSTOM_RS       : cpu_instr_opcode := b"1001";
+  constant INSTR_CUSTOM_CLS      : cpu_instr_opcode := b"1010";
+  constant INSTR_CUSTOM_CRS      : cpu_instr_opcode := b"1011";
+  constant INSTR_CUSTOM_ASR      : cpu_instr_opcode := b"1100";
+  constant INSTR_CUSTOM_INC      : cpu_instr_opcode := b"1101";
+  constant INSTR_CUSTOM_DEC      : cpu_instr_opcode := b"1110";
+
+  constant INSTR_CUSTOM_NOP      : cpu_instr_opcode := b"0000";
+  constant INSTR_CUSTOM_HALT     : cpu_instr_opcode := b"0111";
 end package;
 
 package body types is

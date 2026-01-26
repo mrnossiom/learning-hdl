@@ -8,11 +8,11 @@ entity alu is
   port (
     acc : in cpu_word;
     bus_in : in cpu_word;
-    alu_op : in alu_op;
+    alu_op : in cpu_alu_op;
 
     result : out cpu_word;
     alu_carry : out std_logic;
-    ext_result : out cpu_word
+    extended_result : out cpu_word
   );
 end entity;
 
@@ -24,7 +24,7 @@ begin
   begin
     result <= acc;
     alu_carry <= '0';
-    ext_result <= (others => '0');
+    extended_result <= (others => '0');
 
     case alu_op is
       when alu_op_add =>
@@ -38,7 +38,7 @@ begin
       when alu_op_mul =>
         res_16bit := unsigned(acc) * unsigned(bus_in);
         result <= cpu_word(res_16bit(7 downto 0));
-        ext_result <= cpu_word(res_16bit(15 downto 8));
+        extended_result <= cpu_word(res_16bit(15 downto 8));
 
       when alu_op_and => result <= acc and bus_in;
       when alu_op_xor => result <= acc xor bus_in;
@@ -58,7 +58,8 @@ begin
         alu_carry <= res_9bit(8);
 
       when others =>
-        report "illegal alu operation" severity failure;
+        -- report "illegal alu operation" severity failure;
+        report "illegal alu operation" severity error;
     end case;
   end process;
 end architecture;

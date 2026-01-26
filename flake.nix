@@ -34,6 +34,7 @@
         {
           default = pkgs.mkShell {
             packages = with pkgs; [
+              rustup
               just
 
               ghdl

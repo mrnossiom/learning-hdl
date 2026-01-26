@@ -12,7 +12,6 @@ entity rom is
     load_filename : string
   );
   port (
-    clk : in std_logic;
     address : in cpu_addr;
     data : inout cpu_word
   );  
@@ -20,8 +19,8 @@ end entity;
 
 architecture preloaded of rom is
 begin
-  process is
-    constant high_address : natural := mem_high_addr(mem_size);
+  process(all)
+    constant HIGH_ADDRESS : natural := mem_high_addr(mem_size);
 
     type mem_array is
       array (natural range 0 to high_address) of cpu_word;
@@ -33,15 +32,14 @@ begin
   begin
     loop
       data <= to_x01(mem(to_integer(unsigned(address))));
-      wait until rising_edge(clk);
     end loop;
   end process;
 end architecture;
 
 architecture file_preloaded of rom is
 begin
-  process is
-    constant high_address : natural := mem_high_addr(mem_size);
+  process
+    constant HIGH_ADDRESS : natural := mem_high_addr(mem_size);
 
     type mem_array is
       array (natural range 0 to high_address) of cpu_word;
@@ -71,7 +69,7 @@ begin
 
     loop
       data <= to_x01(mem(to_integer(unsigned(address))));
-      wait until rising_edge(clk);
+      wait on address;
     end loop;
   end process;
 end architecture;

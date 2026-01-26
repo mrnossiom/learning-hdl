@@ -8,12 +8,12 @@ entity accumulator is
 
     output_en : in std_logic;
     write_en : in std_logic;
-    acc_sel : in std_logic;
+    sel_alu : in std_logic;
     alu_in : in cpu_word;
-    bus_in : in cpu_word;
 
-    acc : out cpu_word;
-    bus_out : out cpu_word
+    bus_io : inout cpu_word;
+
+    acc : out cpu_word
   );
 end entity;
 
@@ -21,9 +21,9 @@ architecture rtl of accumulator is
   signal acc_value : cpu_word := (others => '0');
   signal next_acc : cpu_word;
 begin
-  next_acc <= alu_in when acc_sel else bus_in;
+  next_acc <= alu_in when sel_alu else bus_io;
 
-  bus_out <= acc_value when output_en else (others => 'Z');
+  bus_io <= acc_value when output_en else (others => 'Z');
 
   acc <= acc_value;
 
