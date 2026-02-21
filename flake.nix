@@ -24,7 +24,7 @@
       );
     in
     {
-      formatter = forAllPkgs (pkgs: pkgs.nixpkgs-fmt);
+      formatter = forAllPkgs (pkgs: pkgs.nixfmt-tree);
 
       devShells = forAllPkgs (
         pkgs:
