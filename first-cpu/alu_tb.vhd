@@ -9,8 +9,9 @@ entity alu_tb is
 end entity;
 
 architecture sim of alu_tb is
+  signal clk : std_logic;
   signal acc : cpu_word;
-  signal bus_in : cpu_word;
+  signal data_bus : cpu_word;
   signal alu_op : cpu_alu_op := alu_op_add;
 
   signal result : cpu_word;
@@ -19,8 +20,9 @@ architecture sim of alu_tb is
 begin
   uut: entity work.alu(rtl)
     port map (
+      clk => clk,
       acc => acc,
-      bus_in => bus_in,
+      data_bus => data_bus,
       alu_op => alu_op,
       result => result,
       alu_carry => alu_carry,
@@ -29,10 +31,10 @@ begin
 
   process
   begin
-    acc <= x"01"; bus_in <= x"01"; alu_op <= alu_op_add; wait for 10 fs;
+    acc <= x"01"; data_bus <= x"01"; alu_op <= alu_op_add; wait for 10 fs;
     assert (result = x"02") report "addition failed";
 
-    acc <= x"01"; bus_in <= x"01"; alu_op <= alu_op_sub; wait for 10 fs;
+    acc <= x"01"; data_bus <= x"01"; alu_op <= alu_op_sub; wait for 10 fs;
     assert (result = x"00") report "substraction failed";
 
     stop;

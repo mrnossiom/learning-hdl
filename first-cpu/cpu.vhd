@@ -5,20 +5,20 @@ use work.types.all;
 
 entity cpu is
   port (
-    clk, reset : in std_logic := '0'
+    clk, reset : in std_logic
   );
 end entity;
 
 architecture rtl of cpu is
-  signal pc : cpu_addr := x"00";
-  signal next_pc : cpu_addr := x"00";
-  signal bus_io : cpu_word;
+  signal pc : cpu_addr;
+  signal next_pc : cpu_addr;
+  signal data_bus : cpu_word;
   signal alu_op : cpu_alu_op;
 
   signal instr : cpu_word;
 
   signal reg_read_en, reg_write_en : std_logic;
-  signal reg_read_num, reg_write_num : cpu_rn;
+  signal reg_read_num, reg_write_num : cpu_regnum;
   signal acc_sel_alu : std_logic;
   signal acc_write_en, acc_output_en : std_logic;
   signal carry_write_en : std_logic;
@@ -36,26 +36,29 @@ begin
       write_en => reg_write_en,
       read_num => reg_read_num,
       write_num => reg_write_num,
-      bus_io => bus_io
+      data_bus => data_bus
   );
 
-  instrs_rom: entity work.rom(file_preloaded)
+  instructions_rom: entity work.rom(file_preloaded)
     generic map(
-      mem_size => 1 mb,
+      mem_size => 1 kb,
       load_filename => "program.bin"
     )
     port map(
+      clk => clk,
       address => pc,
-      data => instr
+      instr => instr
     );
 
   control_unit: entity work.control_unit
     port map(
+      clk => clk,
+      reset => reset,
       instr => instr,
       carry_reg => carry_reg,
       alu_carry => alu_carry,
       pc => pc,
-      bus_io => bus_io,
+      data_bus => data_bus,
       alu_op => alu_op,
       next_pc => next_pc,
       reg_read_en => reg_read_en,
@@ -75,24 +78,27 @@ begin
       write_en => acc_write_en,
       sel_alu => acc_sel_alu,
       alu_in => alu_result,
-      bus_io => bus_io,
+      data_bus => data_bus,
       acc => acc
     );
 
   alu: entity work.alu
     port map(
+      clk => clk,
       acc => acc,
-      bus_in => bus_io,
+      data_bus => data_bus,
       alu_op => alu_op,
       result => alu_result,
       alu_carry => alu_carry,
       extended_result => extd_result
     );
 
-  process(clk)
+  process(clk, reset)
   begin
-    if falling_edge(clk) then
-      pc <= x"00" when reset else next_pc;
+    if reset then
+      pc <= x"00";
+    elsif falling_edge(clk) then
+      pc <= next_pc;
     end if;
   end process;
 end;

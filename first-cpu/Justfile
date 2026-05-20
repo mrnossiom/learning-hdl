@@ -9,7 +9,7 @@ types.vhd \
 alu.vhd \
 rom.vhd \
 accumulator.vhd \
-control.vhd \
+control_unit.vhd \
 regfile.vhd \
 cpu.vhd \
 "
@@ -26,10 +26,13 @@ analyze *args:
 run entity *args: analyze
 	ghdl elab-run {{ghdl_flags}} {{entity}} {{args}} --wave={{entity}}.ghw
 
-synsthesize entity *args:
-	yosys -p 'ghdl {{ghdl_flags}} {{sources}} -e {{entity}}; opt; show'
+view entity: (run entity)
+	gtkwave {{entity}}.ghw --script {{entity}}.tcl
+
+synthesize entity *args:
+	yosys -p 'ghdl --latches {{ghdl_flags}} {{sources}}  -e {{entity}}; opt; show' {{args}}
 
 clean:
 	@rm -vf work-obj08.cf
 	@rm -vf *.vcf *.ghw
-	@rm -vf *.netlist.svg
+	@rm -vf *.netlist.svg *.netlist.json

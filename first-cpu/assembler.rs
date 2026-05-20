@@ -193,8 +193,8 @@ impl Instruction {
             ("or", [rn]) => Instruction::Or(rn.parse()?),
             ("xor", [rn]) => Instruction::Xor(rn.parse()?),
 
-            ("cp", [rn, "acc"]) => Instruction::CopyToAcc(rn.parse()?),
             ("cp", ["acc", rn]) => Instruction::CopyFromAcc(rn.parse()?),
+            ("cp", [rn, "acc"]) => Instruction::CopyToAcc(rn.parse()?),
 
             ("cmp", [rn]) => Instruction::Cmp(rn.parse()?),
 
@@ -236,8 +236,8 @@ impl Instruction {
             Instruction::Or(rn) => instr_opcode_rn(0x4, rn),
             Instruction::Xor(rn) => instr_opcode_rn(0x5, rn),
 
-            Instruction::CopyToAcc(rn) => instr_opcode_rn(0x8, rn),
-            Instruction::CopyFromAcc(rn) => instr_opcode_rn(0x9, rn),
+            Instruction::CopyFromAcc(rn) => instr_opcode_rn(0x8, rn),
+            Instruction::CopyToAcc(rn) => instr_opcode_rn(0x9, rn),
 
             Instruction::Cmp(rn) => instr_opcode_rn(0xA, rn),
 

@@ -10,8 +10,9 @@ begin
 end entity;
 
 architecture sim of rom_tb is
+  signal clk : std_logic := '0';
   signal address : cpu_addr;
-  signal data : cpu_word;
+  signal instr : cpu_word;
 begin
   uut: entity work.rom(file_preloaded)
     generic map (
@@ -19,20 +20,22 @@ begin
       mem_size => 1 kib
     )
     port map (
+      clk => clk,
       address => address,
-      data => data
+      instr => instr
     );
 
   process
   begin
+    -- TODO: take clk into account
     address <= x"00"; wait for 2 us;
-    report to_hex_string(data);
+    report to_hex_string(instr);
     address <= x"01"; wait for 2 us;
-    report to_hex_string(data);
+    report to_hex_string(instr);
     address <= x"02"; wait for 2 us;
-    report to_hex_string(data);
+    report to_hex_string(instr);
     address <= x"22"; wait for 2 us;
-    report to_hex_string(data);
+    report to_hex_string(instr);
 
     wait for 2 us;
     stop;

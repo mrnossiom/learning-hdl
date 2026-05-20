@@ -18,6 +18,9 @@ package types is
 
   ---
 
+  constant CLK_PERIOD : time := 10 ns;
+  constant HALF_CLK_PERIOD : time := CLK_PERIOD / 2;
+
   subtype cpu_alu_op is std_logic_vector(3 downto 0);
   constant ALU_OP_ADD : cpu_alu_op := b"0000";
   constant ALU_OP_SUB : cpu_alu_op := b"0001";
@@ -39,7 +42,7 @@ package types is
   subtype cpu_addr is std_logic_vector(7 downto 0);
 
   -- register number
-  subtype cpu_rn is std_logic_vector(3 downto 0);
+  subtype cpu_regnum is std_logic_vector(3 downto 0);
 
   subtype cpu_word is std_logic_vector(7 downto 0);
   subtype cpu_bit_word is bit_vector(7 downto 0);

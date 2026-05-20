@@ -45,7 +45,6 @@
               netlistsvg
 
               vhdl-ls
-              nixfmt
             ];
           };
         }

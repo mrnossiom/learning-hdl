@@ -8,3 +8,5 @@
 # Waveform files
 *.vcf
 *.ghw
+
+*.bin

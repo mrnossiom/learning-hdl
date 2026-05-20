@@ -17,13 +17,21 @@ begin
       reset => reset
     );
 
-  clock : process
+  clock: process
   begin
     loop
-      -- 1 MHz
-      clk <= not clk after 1 us;
-      wait for 1 us;
+      clk <= not clk after HALF_CLK_PERIOD;
+      wait for HALF_CLK_PERIOD;
     end loop;
   end process;
-end architecture;
 
+  initial: process
+  begin
+    reset <= '1', '0' after CLK_PERIOD;
+
+    -- exec 10 instructions
+    wait for 10 * CLK_PERIOD;
+
+    stop;
+  end process;
+end architecture;
