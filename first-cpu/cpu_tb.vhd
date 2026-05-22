@@ -9,7 +9,7 @@ entity cpu_tb is
 end entity;
 
 architecture sim of cpu_tb is
-  signal clk, reset : std_logic := '0';
+  signal clk, reset : std_logic := '1';
 begin
   uut: entity work.cpu
     port map (
@@ -29,8 +29,8 @@ begin
   begin
     reset <= '1', '0' after CLK_PERIOD;
 
-    -- exec 10 instructions
-    wait for 10 * CLK_PERIOD;
+    -- run X xycles
+    wait for 30 * CLK_PERIOD;
 
     stop;
   end process;

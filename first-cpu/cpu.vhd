@@ -10,7 +10,7 @@ entity cpu is
 end entity;
 
 architecture rtl of cpu is
-  signal pc : cpu_addr;
+  signal pc : cpu_addr := (others => '0');
   signal next_pc : cpu_addr;
   signal data_bus : cpu_word;
   signal alu_op : cpu_alu_op;
@@ -20,11 +20,10 @@ architecture rtl of cpu is
   signal reg_read_en, reg_write_en : std_logic;
   signal reg_read_num, reg_write_num : cpu_regnum;
   signal acc_sel_alu : std_logic;
-  signal acc_write_en, acc_output_en : std_logic;
+  signal acc_write_en, acc_read_en : std_logic;
   signal carry_write_en : std_logic;
 
   signal alu_carry : std_logic;
-  signal carry_reg : std_logic;
   signal extd_result : cpu_word;
 
   signal alu_result, acc : cpu_word;
@@ -46,16 +45,14 @@ begin
     )
     port map(
       clk => clk,
-      address => pc,
+      address => next_pc,
       instr => instr
     );
 
   control_unit: entity work.control_unit
     port map(
-      clk => clk,
       reset => reset,
       instr => instr,
-      carry_reg => carry_reg,
       alu_carry => alu_carry,
       pc => pc,
       data_bus => data_bus,
@@ -67,14 +64,14 @@ begin
       reg_write_num => reg_write_num,
       acc_sel_alu => acc_sel_alu,
       acc_write_en => acc_write_en,
-      acc_output_en => acc_output_en,
+      acc_read_en => acc_read_en,
       carry_write_en => carry_write_en
     );
 
   accumulator: entity work.accumulator
     port map(
       clk => clk,
-      output_en => acc_output_en,
+      read_en => acc_read_en,
       write_en => acc_write_en,
       sel_alu => acc_sel_alu,
       alu_in => alu_result,
@@ -93,12 +90,14 @@ begin
       extended_result => extd_result
     );
 
-  process(clk, reset)
+  process(clk)
   begin
-    if reset then
-      pc <= x"00";
-    elsif falling_edge(clk) then
-      pc <= next_pc;
+    if rising_edge(clk) then
+      if reset then
+        pc <= (others => '0');
+      else
+        pc <= next_pc;
+      end if;
     end if;
   end process;
 end;

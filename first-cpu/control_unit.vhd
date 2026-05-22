@@ -6,10 +6,9 @@ use work.types.all;
 
 entity control_unit is
   port (
-    clk, reset : in std_logic;
+    reset : in std_logic;
     instr : in cpu_word;
 
-    carry_reg : in std_logic;
     alu_carry : in std_logic;
 
     pc : in cpu_addr;
@@ -25,7 +24,7 @@ entity control_unit is
     reg_write_num : out cpu_regnum;
     acc_sel_alu : out std_logic;
     acc_write_en : out std_logic;
-    acc_output_en : out std_logic;
+    acc_read_en : out std_logic;
     carry_write_en : out std_logic
   );
 begin
@@ -38,30 +37,38 @@ architecture rtl of control_unit is
   alias imm_imm4 is instr(3 downto 0);
   alias custom_content is instr(3 downto 0);
 begin
-  process(clk, reset)
+  process(pc, instr)
   begin
     if reset then
+      next_pc <= (others => '0');
       alu_op <= ALU_OP_ADD;
-      next_pc <= x"00";
-    elsif rising_edge(clk) then
+    else
       next_pc <= cpu_addr(to_01(unsigned(pc) + 1));
+
+      -- reset r/w flags
+      acc_read_en <= '0';
+      acc_write_en <= '0';
+      reg_read_en <= '0';
+      reg_write_en <= '0';
+      carry_write_en <= '0';
+      data_bus <= (others => 'Z');
 
       case opcode is
         -- Reg
         when INSTR_OPCODE_ADD_RN =>
           report "executing `add r" & to_string(to_integer(unsigned(reg_rn))) & "`" severity note;
           alu_op <= ALU_OP_ADD;
-          acc_sel_alu <= '1';
           reg_read_en <= '1';
           reg_read_num <= reg_rn;
+          acc_sel_alu <= '1';
           acc_write_en <= '1';
           carry_write_en <= '1';
         when INSTR_OPCODE_SUB_RN =>
           report "executing `sub r" & to_string(to_integer(unsigned(reg_rn))) & "`" severity note;
           alu_op <= ALU_OP_SUB;
-          acc_sel_alu <= '1';
           reg_read_en <= '1';
           reg_read_num <= reg_rn;
+          acc_sel_alu <= '1';
           acc_write_en <= '1';
           carry_write_en <= '1';
         when INSTR_OPCODE_MUL_RN =>
@@ -94,7 +101,7 @@ begin
         when INSTR_OPCODE_CP_ACC_RN =>
           report "executing `cp acc,r" & to_string(to_integer(unsigned(reg_rn))) & "`" severity note;
           -- write acc value to the bus
-          acc_output_en <= '1';
+          acc_read_en <= '1';
           -- write the bus to rn
           reg_write_en <= '1';
           reg_write_num <= reg_rn;
@@ -123,7 +130,7 @@ begin
           next_pc <= b"0000" & imm_imm4;
         when INSTR_OPCODE_BEQ =>
           report "executing `beq " & to_string(imm_imm4) & "`" severity note;
-          if carry_reg then
+          if alu_carry then
             next_pc <= b"0000" & imm_imm4;
           end if;
         when INSTR_OPCODE_LLI_IMM =>

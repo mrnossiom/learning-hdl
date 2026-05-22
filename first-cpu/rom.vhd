@@ -39,12 +39,13 @@ architecture file_preloaded of rom is
       end loop;
       return mem;
     end function;
+
+    constant MEM : mem_array := load_initial;
 begin
   process(clk)
-    variable mem : mem_array := load_initial;
   begin
     if rising_edge(clk) then
-      instr <= to_x01(mem(to_integer(unsigned(address))));
+      instr <= to_x01(MEM(to_integer(unsigned(address))));
     end if;
   end process;
 end architecture;

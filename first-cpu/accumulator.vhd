@@ -6,7 +6,7 @@ entity accumulator is
   port (
     clk : in std_logic;
 
-    output_en : in std_logic;
+    read_en : in std_logic;
     write_en : in std_logic;
     sel_alu : in std_logic;
     alu_in : in cpu_word;
@@ -23,13 +23,13 @@ architecture rtl of accumulator is
 begin
   next_acc <= alu_in when sel_alu else data_bus;
 
-  data_bus <= acc_value when output_en else (others => 'Z');
+  data_bus <= acc_value when read_en else (others => 'Z');
 
   acc <= acc_value;
 
   process(clk)
   begin
-    if rising_edge(clk) then
+    if falling_edge(clk) then
       if (write_en) then
         acc_value <= next_acc;
       end if;

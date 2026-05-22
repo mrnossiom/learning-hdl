@@ -23,7 +23,7 @@ begin
     variable res_9bit : unsigned(8 downto 0);
     variable res_16bit : unsigned(15 downto 0);
   begin
-    if rising_edge(clk) then
+    if falling_edge(clk) then
       result <= acc;
       alu_carry <= '0';
       extended_result <= (others => '0');

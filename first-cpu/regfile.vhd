@@ -19,13 +19,13 @@ architecture rtl of regfile is
 
     signal regs : reg_array := (others => x"00");
 begin
-  data_bus <= regs(to_integer(unsigned(read_num)));
+  data_bus <= regs(to_integer(unsigned(read_num))) when read_en else (others => 'Z');
 
   process(clk)
   begin
-    if rising_edge(clk) then
+    if falling_edge(clk) then
       if write_en then
-        regs(to_integer(unsigned(read_num))) <= data_bus;
+        regs(to_integer(unsigned(write_num))) <= data_bus;
       end if;
     end if;
   end process;

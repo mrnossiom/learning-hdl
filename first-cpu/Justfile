@@ -30,7 +30,15 @@ view entity: (run entity)
 	gtkwave {{entity}}.ghw --script {{entity}}.tcl
 
 synthesize entity *args:
-	yosys -p 'ghdl --latches {{ghdl_flags}} {{sources}}  -e {{entity}}; opt; show' {{args}}
+	# use these passes
+	# -p flatten
+	# -p 'show {{entity}}'
+	yosys \
+		-p 'ghdl --latches {{ghdl_flags}} {{sources}} -e {{entity}}' \
+		-p 'hierarchy -top cpu' \
+		-p proc \
+		{{args}} \
+		-p shell
 
 clean:
 	@rm -vf work-obj08.cf
