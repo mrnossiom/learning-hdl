@@ -65,10 +65,10 @@ package types is
   constant INSTR_OPCODE_CMP_RN    : cpu_instr_opcode := b"1010";
 
   -- Imm
-  constant INSTR_OPCODE_BRANCH  : cpu_instr_opcode := b"1011";
-  constant INSTR_OPCODE_BEQ     : cpu_instr_opcode := b"1100";
-  constant INSTR_OPCODE_LLI_IMM : cpu_instr_opcode := b"1101";
-  constant INSTR_OPCODE_LUI_IMM : cpu_instr_opcode := b"1110";
+  constant INSTR_OPCODE_BRANCH      : cpu_instr_opcode := b"1011";
+  constant INSTR_OPCODE_BRANCH_COND : cpu_instr_opcode := b"1100";
+  constant INSTR_OPCODE_LLI_IMM     : cpu_instr_opcode := b"1101";
+  constant INSTR_OPCODE_LUI_IMM     : cpu_instr_opcode := b"1110";
 
   -- Custom
   constant INSTR_OPCODE_CUSTOM   : cpu_instr_opcode := b"1111";

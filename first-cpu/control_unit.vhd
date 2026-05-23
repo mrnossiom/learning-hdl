@@ -129,8 +129,8 @@ begin
           report "executing `b " & to_string(imm_imm4) & "`" severity note;
           -- todo smarter jumps with multiples of 2 or 4
           next_pc <= b"0000" & imm_imm4;
-        when INSTR_OPCODE_BEQ =>
-          report "executing `beq " & to_string(imm_imm4) & "`" severity note;
+        when INSTR_OPCODE_BRANCH_COND =>
+          report "executing `bc " & to_string(imm_imm4) & "`" severity note;
           if alu_carry then
             next_pc <= b"0000" & imm_imm4;
           end if;

@@ -165,7 +165,7 @@ enum Instruction {
 
     // Imm
     Branch(String),
-    Beq(String),
+    BranchCond(String),
 
     LoadLowerImmediate(Imm4),
     LoadUpperImmediate(Imm4),
@@ -201,7 +201,7 @@ impl Instruction {
 
             // Imm
             ("b", [label]) => Instruction::Branch(label.to_string()),
-            ("beq", [label]) => Instruction::Beq(label.to_string()),
+            ("bc", [label]) => Instruction::BranchCond(label.to_string()),
 
             ("lli", [imm4]) => Instruction::LoadLowerImmediate(imm4.parse()?),
             ("lui", [imm4]) => Instruction::LoadUpperImmediate(imm4.parse()?),
@@ -252,7 +252,7 @@ impl Instruction {
                 };
                 instr_opcode_imm4(0b1011, &address)
             }
-            Instruction::Beq(label) => {
+            Instruction::BranchCond(label) => {
                 let Some(address) = labels.get(label).copied() else {
                     return Err("could not find label".into());
                 };

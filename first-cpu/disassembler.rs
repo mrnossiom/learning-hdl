@@ -73,7 +73,7 @@ fn decode_instr(instr: &mut String, raw: u16) {
         imm @ 0b1011..=0b1110 => {
             instr.push_str(match imm {
                 0b1011 => "b ",
-                0b1100 => "beq ",
+                0b1100 => "bc ",
                 0b1101 => "lli ",
                 0b1110 => "lui ",
 

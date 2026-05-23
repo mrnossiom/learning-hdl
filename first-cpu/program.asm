@@ -1,7 +1,7 @@
         lli 0
         cp acc,r0 ; result
-        lli 5
-        cp acc,r1 ; loop end
+        lli 6
+        cp acc,r1 ; loop end exclusive
         lli 1 ; loop start
 .loop
         cp acc,r2 ; save counter
@@ -10,5 +10,5 @@
         cp r2,acc ; restore counter
         inc
         cmp r1 ; cmp to loop end
-        beq loop
+        bc loop ; while end not reached start over
         halt

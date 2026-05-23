@@ -21,8 +21,8 @@ Custom    │ Opcode   │ undef    │
 
 ```
 - Reg
-add rn      0000        rn
-sub rn      0001        rn
+add rn      0000        rn ; acc <= acc + rn
+sub rn      0001        rn ; acc <= acc - rn
 mul rn      0010        rn
 and rn      0011        rn
 or  rn      0100        rn
@@ -37,7 +37,7 @@ cmp rn      1010        rn
 
 - Imm
 b label     1011        imm4
-beq label   1100        imm4
+bc label    1100        imm4 ; branch conditional, branch if carry/borrow is 1
 
 lli imm4    1101        imm4
 lui imm4    1110        imm4
