@@ -41,11 +41,12 @@ begin
   begin
     if reset then
       next_pc <= (others => '0');
-      alu_op <= ALU_OP_ADD;
+      alu_op <= ALU_OP_NOP;
     else
       next_pc <= cpu_addr(to_01(unsigned(pc) + 1));
 
       -- reset r/w flags
+      alu_op <= ALU_OP_NOP;
       acc_read_en <= '0';
       acc_write_en <= '0';
       reg_read_en <= '0';
@@ -153,7 +154,6 @@ begin
               alu_op <= ALU_OP_LS;
               acc_sel_alu <= '1';
               acc_write_en <= '1';
-              -- why not? acc_output_en <= '1';
             when INSTR_CUSTOM_RS =>
               report "executing `rs`" severity failure;
             when INSTR_CUSTOM_CLS =>

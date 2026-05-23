@@ -23,7 +23,8 @@ architecture rtl of cpu is
   signal acc_write_en, acc_read_en : std_logic;
   signal carry_write_en : std_logic;
 
-  signal alu_carry : std_logic;
+  signal alu_carry : std_logic := '0';
+  signal alu_carry_next : std_logic;
   signal extd_result : cpu_word;
 
   signal alu_result, acc : cpu_word;
@@ -86,9 +87,14 @@ begin
       data_bus => data_bus,
       alu_op => alu_op,
       result => alu_result,
-      alu_carry => alu_carry,
+      alu_carry => alu_carry_next,
       extended_result => extd_result
     );
+
+  process(all)
+  begin
+    alu_carry <= alu_carry_next when carry_write_en else alu_carry;
+  end process;
 
   process(clk)
   begin

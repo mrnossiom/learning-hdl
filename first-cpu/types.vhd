@@ -22,6 +22,7 @@ package types is
   constant HALF_CLK_PERIOD : time := CLK_PERIOD / 2;
 
   subtype cpu_alu_op is std_logic_vector(3 downto 0);
+  constant ALU_OP_NOP : cpu_alu_op := b"1111";
   constant ALU_OP_ADD : cpu_alu_op := b"0000";
   constant ALU_OP_SUB : cpu_alu_op := b"0001";
   constant ALU_OP_MUL : cpu_alu_op := b"0010";

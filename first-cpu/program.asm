@@ -12,17 +12,3 @@
         cmp r1 ; cmp to loop end
         beq loop
         halt
-
-;         lli 0
-;         cp acc,r1
-;         cp acc,r0
-;         lli 5
-; .loop
-;         cp acc,r2
-;         add r0
-;         cp acc,r0
-;         cp r2,acc
-;         dec
-;         cmp r1
-;         beq loop
-;         halt

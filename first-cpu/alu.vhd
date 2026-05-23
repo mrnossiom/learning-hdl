@@ -34,35 +34,38 @@ begin
       extended_result <= (others => '0');
 
       case alu_op is
-        when alu_op_add =>
+        when ALU_OP_ADD =>
           res_9bit := unsigned('0' & acc) + unsigned('0' & data_bus);
           result <= cpu_word(res_9bit(7 downto 0));
           alu_carry <= res_9bit(8);
-        when alu_op_sub =>
+        when ALU_OP_SUB =>
           res_9bit := unsigned('0' & acc) - unsigned('0' & data_bus);
           result <= cpu_word(res_9bit(7 downto 0));
           alu_carry <= res_9bit(8);
-        when alu_op_mul =>
+        when ALU_OP_MUL =>
           res_16bit := unsigned(acc) * unsigned(data_bus);
           result <= cpu_word(res_16bit(7 downto 0));
           extended_result <= cpu_word(res_16bit(15 downto 8));
 
-        when alu_op_and => result <= acc and data_bus;
-        when alu_op_xor => result <= acc xor data_bus;
-        when alu_op_ls => result <= acc(6 downto 0) & '0';
-        when alu_op_rs => result <= '0' & acc(7 downto 1);
-        when alu_op_cls => result <= acc(6 downto 0) & acc(7);
-        when alu_op_crs => result <= acc(0) & acc(7 downto 1);
-        when alu_op_asr => result <= acc(7) & acc(7 downto 1);
+        when ALU_OP_AND => result <= acc and data_bus;
+        when ALU_OP_XOR => result <= acc xor data_bus;
+        when ALU_OP_LS => result <= acc(6 downto 0) & '0';
+        when ALU_OP_RS => result <= '0' & acc(7 downto 1);
+        when ALU_OP_CLS => result <= acc(6 downto 0) & acc(7);
+        when ALU_OP_CRS => result <= acc(0) & acc(7 downto 1);
+        when ALU_OP_ASR => result <= acc(7) & acc(7 downto 1);
 
-        when alu_op_inc =>
+        when ALU_OP_INC =>
           res_9bit := unsigned('0' & acc) + 1;
           result <= cpu_word(res_9bit(7 downto 0));
           alu_carry <= res_9bit(8);
-        when alu_op_dec =>
+        when ALU_OP_DEC =>
           res_9bit := unsigned('0' & acc) - 1;
           result <= cpu_word(res_9bit(7 downto 0));
           alu_carry <= res_9bit(8);
+
+        when ALU_OP_NOP =>
+          -- do nothing
 
         when others =>
           report "illegal alu operation " & to_string(alu_op) severity failure;
