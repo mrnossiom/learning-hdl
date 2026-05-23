@@ -27,7 +27,7 @@ run entity *args: analyze
 	ghdl elab-run {{ghdl_flags}} {{entity}} {{args}} --wave={{entity}}.ghw
 
 view entity: (run entity)
-	gtkwave {{entity}}.ghw --script {{entity}}.tcl
+	gtkwave {{entity}}.ghw --script {{entity}}.tcl --rcvar 'sst_expanded off'
 
 synthesize entity *args:
 	# use these passes

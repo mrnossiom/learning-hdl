@@ -6,10 +6,11 @@ use work.types.all;
 
 entity alu is
   port (
-    clk : in std_logic;
+    reset : in std_logic;
+
+    alu_op : in cpu_alu_op;
     acc : in cpu_word;
     data_bus : in cpu_word;
-    alu_op : in cpu_alu_op;
 
     result : out cpu_word;
     alu_carry : out std_logic;
@@ -19,11 +20,15 @@ end entity;
 
 architecture rtl of alu is
 begin
-  process(clk)
+  process(acc, data_bus, alu_op)
     variable res_9bit : unsigned(8 downto 0);
     variable res_16bit : unsigned(15 downto 0);
   begin
-    if falling_edge(clk) then
+    if reset then
+      result <= (others => '0');
+      alu_carry <= '0';
+      extended_result <= (others => '0');
+    else
       result <= acc;
       alu_carry <= '0';
       extended_result <= (others => '0');

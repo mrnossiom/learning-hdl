@@ -29,8 +29,8 @@ begin
   begin
     reset <= '1', '0' after CLK_PERIOD;
 
-    -- run X xycles
-    wait for 30 * CLK_PERIOD;
+    -- run for X xycles
+    wait for 50 * CLK_PERIOD;
 
     stop;
   end process;

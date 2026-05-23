@@ -163,6 +163,21 @@ begin
             when INSTR_CUSTOM_ASR =>
               report "executing `asr`" severity failure;
 
+            when INSTR_CUSTOM_INC =>
+              report "executing `inc`" severity note;
+              alu_op <= ALU_OP_ADD;
+              data_bus <= x"01";
+              acc_sel_alu <= '1';
+              acc_write_en <= '1';
+              carry_write_en <= '1';
+            when INSTR_CUSTOM_DEC =>
+              report "executing `dec`" severity note;
+              alu_op <= ALU_OP_SUB;
+              data_bus <= x"01";
+              acc_sel_alu <= '1';
+              acc_write_en <= '1';
+              carry_write_en <= '1';
+
             when INSTR_CUSTOM_NOP =>
               report "executing `nop`" severity note;
               -- actively do nothing

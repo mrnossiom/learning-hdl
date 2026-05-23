@@ -1,15 +1,28 @@
-        ; add 6 and 7 together
-        lli 6
-        cp acc,r0
-        lli 7
+        lli 0
+        cp acc,r0 ; result
+        lli 5
+        cp acc,r1 ; loop end
+        lli 1 ; loop start
+.loop
+        cp acc,r2 ; save counter
         add r0
-        ; acc should contain 13
+        cp acc,r0
+        cp r2,acc ; restore counter
+        inc
+        cmp r1 ; cmp to loop end
+        beq loop
         halt
 
-.test
-        ; test labels for the assembler
-        cp      r5,acc
-        sub     r3
-        cp      r7,acc
-        sub     r8
-        halt
+;         lli 0
+;         cp acc,r1
+;         cp acc,r0
+;         lli 5
+; .loop
+;         cp acc,r2
+;         add r0
+;         cp acc,r0
+;         cp r2,acc
+;         dec
+;         cmp r1
+;         beq loop
+;         halt

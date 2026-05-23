@@ -55,6 +55,7 @@ impl Assembly {
                 println!("label `{label}` points to address {address:X}");
                 labels.insert(label.to_string(), address);
             } else {
+                let (line, _comment) = line.split_once(';').unwrap_or((line, ""));
                 let instr = Instruction::parse(line)?;
                 println!("instr `{instr:?}`");
                 instrs.push(instr);
@@ -127,7 +128,7 @@ impl<const N: usize> std::str::FromStr for Imm<N> {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let bytes = s.as_bytes();
 
-        let raw_value = if let Some(b'0') = bytes.get(0) {
+        let raw_value = if let Some(b'0') = bytes.get(0) && bytes.len() > 1 {
             let radix = match bytes.get(1) {
                 Some(b'x') => 16,
                 Some(b'o') => 8,
@@ -236,21 +237,12 @@ impl Instruction {
             Instruction::Or(rn) => instr_opcode_rn(0x4, rn),
             Instruction::Xor(rn) => instr_opcode_rn(0x5, rn),
 
-            Instruction::CopyFromAcc(rn) => instr_opcode_rn(0x8, rn),
-            Instruction::CopyToAcc(rn) => instr_opcode_rn(0x9, rn),
+            Instruction::CopyFromAcc(rn) => instr_opcode_rn(0b1000, rn),
+            Instruction::CopyToAcc(rn) => instr_opcode_rn(0b1001, rn),
 
-            Instruction::Cmp(rn) => instr_opcode_rn(0xA, rn),
+            Instruction::Cmp(rn) => instr_opcode_rn(0b1010, rn),
 
             // Imm
-            Instruction::Beq(label) => {
-                let Some(address) = labels.get(label).copied() else {
-                    return Err("could not find label".into());
-                };
-                let Some(address) = Imm4::new(address as u32) else {
-                    return Err("address range is too far".into());
-                };
-                instr_opcode_imm4(0xB, &address)
-            }
             Instruction::Branch(label) => {
                 let Some(address) = labels.get(label).copied() else {
                     return Err("could not find label".into());
@@ -258,16 +250,25 @@ impl Instruction {
                 let Some(address) = Imm4::new(address as u32) else {
                     return Err("address range is too far".into());
                 };
-                instr_opcode_imm4(0xC, &address)
+                instr_opcode_imm4(0b1011, &address)
+            }
+            Instruction::Beq(label) => {
+                let Some(address) = labels.get(label).copied() else {
+                    return Err("could not find label".into());
+                };
+                let Some(address) = Imm4::new(address as u32) else {
+                    return Err("address range is too far".into());
+                };
+                instr_opcode_imm4(0b1100, &address)
             }
 
-            Instruction::LoadLowerImmediate(imm4) => instr_opcode_imm4(0xD, imm4),
-            Instruction::LoadUpperImmediate(imm4) => instr_opcode_imm4(0xE, imm4),
+            Instruction::LoadLowerImmediate(imm4) => instr_opcode_imm4(0b1101, imm4),
+            Instruction::LoadUpperImmediate(imm4) => instr_opcode_imm4(0b1110, imm4),
 
-            Instruction::Nop => 0xF0,
-            Instruction::Inc => 0xF1,
-            Instruction::Dec => 0xF2,
-            Instruction::Halt => 0xF7,
+            Instruction::Nop => 0b1111_0000,
+            Instruction::Inc => 0b1111_1101,
+            Instruction::Dec => 0b1111_1110,
+            Instruction::Halt => 0b1111_0111,
         };
 
         Ok(encoded)

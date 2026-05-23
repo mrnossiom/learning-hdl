@@ -24,8 +24,9 @@ add_signals [list \
 add_signals [list top.cpu_tb.uut.instr] [dict create format "Hex" translator ./disassembler.rs]
 
 add_signals [list \
-    top.cpu_tb.uut.data_bus \
     top.cpu_tb.uut.accumulator.acc_value \
+    top.cpu_tb.uut.data_bus \
+    top.cpu_tb.uut.alu_carry \
 ] [dict create format "Binary"]
 
 add_signals [list \

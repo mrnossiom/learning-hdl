@@ -81,7 +81,7 @@ begin
 
   alu: entity work.alu
     port map(
-      clk => clk,
+      reset => reset,
       acc => acc,
       data_bus => data_bus,
       alu_op => alu_op,
