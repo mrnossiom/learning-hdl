@@ -2,7 +2,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.types.all;
+library first_cpu;
+use first_cpu.types.all;
 
 entity regfile is
   port (
@@ -21,7 +22,7 @@ architecture rtl of regfile is
 begin
   data_bus <= regs(to_integer(unsigned(read_num))) when read_en else (others => 'Z');
 
-  process(clk)
+  process(all)
   begin
     if falling_edge(clk) then
       if write_en then

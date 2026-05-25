@@ -28,9 +28,6 @@
 
       devShells = forAllPkgs (
         pkgs:
-        let
-          yosys = pkgs.callPackage ./yosys.nix { };
-        in
         {
           default = pkgs.mkShell {
             packages = with pkgs; [

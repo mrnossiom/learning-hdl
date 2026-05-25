@@ -3,7 +3,8 @@ use std.env.all;
 library ieee;
 use ieee.std_logic_1164.all;
 
-use work.types.all;
+library first_cpu;
+use first_cpu.types.all;
 
 entity cpu_tb is
 end entity;
@@ -11,7 +12,7 @@ end entity;
 architecture sim of cpu_tb is
   signal clk, reset : std_logic := '1';
 begin
-  uut: entity work.cpu
+  uut: entity first_cpu.cpu
     port map (
       clk => clk,
       reset => reset

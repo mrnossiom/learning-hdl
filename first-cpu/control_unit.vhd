@@ -2,7 +2,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.types.all;
+library first_cpu;
+use first_cpu.types.all;
 
 entity control_unit is
   port (
@@ -37,22 +38,22 @@ architecture rtl of control_unit is
   alias imm_imm4 is instr(3 downto 0);
   alias custom_content is instr(3 downto 0);
 begin
-  process(pc, instr)
+  process(all)
   begin
-    if reset then
+    -- reset r/w flags
+    alu_op <= ALU_OP_NOP;
+    acc_read_en <= '0';
+    acc_write_en <= '0';
+    acc_sel_alu <= '0';
+    reg_read_en <= '0';
+    reg_write_en <= '0';
+    carry_write_en <= '0';
+    data_bus <= (others => 'Z');
+
+    if reset = '1' then
       next_pc <= (others => '0');
-      alu_op <= ALU_OP_NOP;
     else
       next_pc <= cpu_addr(to_01(unsigned(pc) + 1));
-
-      -- reset r/w flags
-      alu_op <= ALU_OP_NOP;
-      acc_read_en <= '0';
-      acc_write_en <= '0';
-      reg_read_en <= '0';
-      reg_write_en <= '0';
-      carry_write_en <= '0';
-      data_bus <= (others => 'Z');
 
       case opcode is
         -- Reg

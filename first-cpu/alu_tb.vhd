@@ -3,13 +3,14 @@ use std.env.all;
 library ieee;
 use ieee.std_logic_1164.all;
 
-use work.types.all;
+library first_cpu;
+use first_cpu.types.all;
 
 entity alu_tb is
 end entity;
 
 architecture sim of alu_tb is
-  signal clk, reset : std_logic;
+  signal reset : std_logic;
   signal acc : cpu_word;
   signal data_bus : cpu_word;
   signal alu_op : cpu_alu_op := alu_op_add;
@@ -18,7 +19,7 @@ architecture sim of alu_tb is
   signal alu_carry : std_logic;
   signal extd_result : cpu_word;
 begin
-  uut: entity work.alu(rtl)
+  uut: entity first_cpu.alu(rtl)
     port map (
       reset => reset,
       acc => acc,

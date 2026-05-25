@@ -1,7 +1,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-use work.types.all;
+library first_cpu;
+use first_cpu.types.all;
 
 entity cpu is
   port (
@@ -29,7 +30,7 @@ architecture rtl of cpu is
 
   signal alu_result, acc : cpu_word;
 begin
-  regfile: entity work.regfile
+  regfile: entity first_cpu.regfile
     port map(
       clk => clk,
       read_en => reg_read_en,
@@ -39,18 +40,19 @@ begin
       data_bus => data_bus
   );
 
-  instructions_rom: entity work.rom(file_preloaded)
+  instructions_rom: entity first_cpu.rom(file_preloaded)
     generic map(
       mem_size => 1 kb,
       load_filename => "program.bin"
     )
     port map(
       clk => clk,
+      reset => reset,
       address => next_pc,
       instr => instr
     );
 
-  control_unit: entity work.control_unit
+  control_unit: entity first_cpu.control_unit
     port map(
       reset => reset,
       instr => instr,
@@ -69,7 +71,7 @@ begin
       carry_write_en => carry_write_en
     );
 
-  accumulator: entity work.accumulator
+  accumulator: entity first_cpu.accumulator
     port map(
       clk => clk,
       read_en => acc_read_en,
@@ -80,7 +82,7 @@ begin
       acc => acc
     );
 
-  alu: entity work.alu
+  alu: entity first_cpu.alu
     port map(
       reset => reset,
       acc => acc,
@@ -96,7 +98,7 @@ begin
     alu_carry <= alu_carry_next when carry_write_en else alu_carry;
   end process;
 
-  process(clk)
+  process(all)
   begin
     if rising_edge(clk) then
       if reset then

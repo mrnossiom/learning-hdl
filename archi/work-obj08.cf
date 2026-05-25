@@ -1,8 +1,0 @@
-v 4
-file . "gate-4-1.vhd" "891ae8cebee517ad9eb29541cb727ac3697a449e" "20250120201658.009":
-  entity rs_flip_flop at 1( 0) + 0 on 25;
-  architecture rtl of rs_flip_flop at 9( 117) + 0 on 26;
-  entity gate_4_1 at 18( 277) + 0 on 27;
-  architecture rtl of gate_4_1 at 25( 364) + 0 on 28;
-  entity gate_4_1_tb at 35( 731) + 0 on 29;
-  architecture behavior of gate_4_1_tb at 38( 766) + 0 on 30;

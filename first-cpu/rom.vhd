@@ -4,7 +4,8 @@ use std.textio.all;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.types.all;
+library first_cpu;
+use first_cpu.types.all;
 
 entity rom is
   generic (
@@ -12,9 +13,9 @@ entity rom is
     load_filename : string
   );
   port (
-    clk : in std_logic;
+    clk, reset : in std_logic;
     address : in cpu_addr;
-    instr : inout cpu_word
+    instr : out cpu_word
   );
 end entity;
 
@@ -42,9 +43,11 @@ architecture file_preloaded of rom is
 
     constant MEM : mem_array := load_initial;
 begin
-  process(clk)
+  process(all)
   begin
-    if rising_edge(clk) then
+    if reset = '1' then
+      instr <= INSTR_OPCODE_CUSTOM & INSTR_CUSTOM_NOP;
+    elsif rising_edge(clk) then
       instr <= to_x01(MEM(to_integer(unsigned(address))));
     end if;
   end process;

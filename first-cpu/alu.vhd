@@ -2,7 +2,8 @@ library ieee;
 use ieee.numeric_std.all;
 use ieee.std_logic_1164.all;
 
-use work.types.all;
+library first_cpu;
+use first_cpu.types.all;
 
 entity alu is
   port (
@@ -20,7 +21,7 @@ end entity;
 
 architecture rtl of alu is
 begin
-  process(acc, data_bus, alu_op)
+  process(all)
     variable res_9bit : unsigned(8 downto 0);
     variable res_16bit : unsigned(15 downto 0);
   begin

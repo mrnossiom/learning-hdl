@@ -1,6 +1,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use work.types.all;
+
+library first_cpu;
+use first_cpu.types.all;
 
 entity accumulator is
   port (
@@ -27,10 +29,10 @@ begin
 
   acc <= acc_value;
 
-  process(clk)
+  process(all)
   begin
     if falling_edge(clk) then
-      if (write_en) then
+      if write_en then
         acc_value <= next_acc;
       end if;
     end if;

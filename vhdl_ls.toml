@@ -1,3 +1,6 @@
 standard = "2008"
 
 [libraries]
+first_cpu.files = [
+  "first-cpu/*.vhd",
+]

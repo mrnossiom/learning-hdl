@@ -1,10 +1,10 @@
 _default:
 	@just --list --unsorted --list-heading '' --list-prefix '—— '
 
-ghdl_flags := "--std=08"
+ghdl_flags := "--std=08 --work=first_cpu"
 
 # order matters
-sources := "\
+first_cpu_src := "\
 types.vhd \
 alu.vhd \
 rom.vhd \
@@ -14,33 +14,39 @@ regfile.vhd \
 cpu.vhd \
 "
 
-tb_sources := "\
+first_cpu_tb_src := "\
 alu_tb.vhd \
 rom_tb.vhd \
 cpu_tb.vhd \
 "
 
+[private]
+ghdl command *args:
+	@ghdl {{command}} {{ghdl_flags}} {{args}}
+
 analyze *args:
-	ghdl analyze {{ghdl_flags}} {{sources}} {{tb_sources}} {{args}}
+	just ghdl analyze {{first_cpu_src}} {{first_cpu_tb_src}} {{args}}
 
 run entity *args: analyze
-	ghdl elab-run {{ghdl_flags}} {{entity}} {{args}} --wave={{entity}}.ghw
+	just ghdl elab-run {{entity}} {{args}} --wave={{entity}}.ghw
 
 view entity: (run entity)
 	gtkwave {{entity}}.ghw --script {{entity}}.tcl --rcvar 'sst_expanded off'
 
 synthesize entity *args:
+	# remove --latches, see https://yosyshq.readthedocs.io/projects/yosys/en/stable/appendix/primer.html#behavioural-modelling
+
 	# use these passes
 	# -p flatten
 	# -p 'show {{entity}}'
 	yosys \
-		-p 'ghdl --latches {{ghdl_flags}} {{sources}} -e {{entity}}' \
+		-p 'ghdl --latches {{ghdl_flags}} {{first_cpu_src}} -e {{entity}}' \
 		-p 'hierarchy -top cpu' \
 		-p proc \
 		{{args}} \
 		-p shell
 
 clean:
-	@rm -vf work-obj08.cf
+	@just ghdl remove
 	@rm -vf *.vcf *.ghw
 	@rm -vf *.netlist.svg *.netlist.json
