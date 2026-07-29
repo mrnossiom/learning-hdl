@@ -156,13 +156,25 @@ begin
               acc_sel_alu <= '1';
               acc_write_en <= '1';
             when INSTR_CUSTOM_RS =>
-              report "executing `rs`" severity failure;
+              report "executing `rs`" severity note;
+              alu_op <= ALU_OP_RS;
+              acc_sel_alu <= '1';
+              acc_write_en <= '1';
             when INSTR_CUSTOM_CLS =>
-              report "executing `cls`" severity failure;
+              report "executing `cls`" severity note;
+              alu_op <= ALU_OP_CLS;
+              acc_sel_alu <= '1';
+              acc_write_en <= '1';
             when INSTR_CUSTOM_CRS =>
-              report "executing `crs`" severity failure;
+              report "executing `crs`" severity note;
+              alu_op <= ALU_OP_CRS;
+              acc_sel_alu <= '1';
+              acc_write_en <= '1';
             when INSTR_CUSTOM_ASR =>
-              report "executing `asr`" severity failure;
+              report "executing `asr`" severity note;
+              alu_op <= ALU_OP_ASR;
+              acc_sel_alu <= '1';
+              acc_write_en <= '1';
 
             when INSTR_CUSTOM_INC =>
               report "executing `inc`" severity note;

@@ -4,6 +4,8 @@
 
 ## Version 1
 
+0-bit CPU (no IO) with 8-bit ISA.
+
 ### Format
 
 ```
