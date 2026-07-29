@@ -2,7 +2,7 @@ standard = "2008"
 
 [libraries]
 first_cpu.files = [
-  "first-cpu/*.vhd",
+  "first_cpu/*.vhd",
 ]
 
 nand_to_basics.files = [
