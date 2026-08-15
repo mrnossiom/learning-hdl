@@ -171,9 +171,16 @@ enum Instruction {
     LoadUpperImmediate(Imm4),
 
     // Custom
-    Nop,
+    LeftShift,
+    RightShift,
+    CircularLeftShift,
+    CircularRightShift,
+    ArithmeticRightShift,
+
     Inc,
     Dec,
+
+    Nop,
     Halt,
 }
 
@@ -207,9 +214,16 @@ impl Instruction {
             ("lui", [imm4]) => Instruction::LoadUpperImmediate(imm4.parse()?),
 
             // Custom
-            ("nop", []) => Instruction::Nop,
+            ("ls", []) => Instruction::LeftShift,
+            ("rs", []) => Instruction::RightShift,
+            ("cls", []) => Instruction::CircularLeftShift,
+            ("crs", []) => Instruction::CircularRightShift,
+            ("ars", []) => Instruction::ArithmeticRightShift,
+
             ("inc", []) => Instruction::Inc,
             ("dec", []) => Instruction::Dec,
+
+            ("nop", []) => Instruction::Nop,
             ("halt", []) => Instruction::Halt,
 
             _ => return Err(format!("incorrect format for `{mnemonic}`").into()),
@@ -265,9 +279,17 @@ impl Instruction {
             Instruction::LoadLowerImmediate(imm4) => instr_opcode_imm4(0b1101, imm4),
             Instruction::LoadUpperImmediate(imm4) => instr_opcode_imm4(0b1110, imm4),
 
-            Instruction::Nop => 0b1111_0000,
+            // Custom
+            Instruction::LeftShift => 0b1111_1000,
+            Instruction::RightShift => 0b1111_1001,
+            Instruction::CircularLeftShift => 0b1111_1010,
+            Instruction::CircularRightShift => 0b1111_1011,
+            Instruction::ArithmeticRightShift => 0b1111_1100,
+
             Instruction::Inc => 0b1111_1101,
             Instruction::Dec => 0b1111_1110,
+
+            Instruction::Nop => 0b1111_0000,
             Instruction::Halt => 0b1111_0111,
         };
 
