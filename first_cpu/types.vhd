@@ -36,7 +36,7 @@ package types is
   constant ALU_OP_CLS : cpu_alu_op := b"1010";
   constant ALU_OP_CRS : cpu_alu_op := b"1011";
   -- arithmetic right shift
-  constant ALU_OP_ASR : cpu_alu_op := b"1100";
+  constant ALU_OP_ARS : cpu_alu_op := b"1100";
   constant ALU_OP_INC : cpu_alu_op := b"1101";
   constant ALU_OP_DEC : cpu_alu_op := b"1110";
 
@@ -78,7 +78,7 @@ package types is
   constant INSTR_CUSTOM_RS       : cpu_instr_opcode := b"1001";
   constant INSTR_CUSTOM_CLS      : cpu_instr_opcode := b"1010";
   constant INSTR_CUSTOM_CRS      : cpu_instr_opcode := b"1011";
-  constant INSTR_CUSTOM_ASR      : cpu_instr_opcode := b"1100";
+  constant INSTR_CUSTOM_ARS      : cpu_instr_opcode := b"1100";
   constant INSTR_CUSTOM_INC      : cpu_instr_opcode := b"1101";
   constant INSTR_CUSTOM_DEC      : cpu_instr_opcode := b"1110";
 

@@ -170,9 +170,9 @@ begin
               alu_op <= ALU_OP_CRS;
               acc_sel_alu <= '1';
               acc_write_en <= '1';
-            when INSTR_CUSTOM_ASR =>
-              report "executing `asr`" severity note;
-              alu_op <= ALU_OP_ASR;
+            when INSTR_CUSTOM_ARS =>
+              report "executing `ars`" severity note;
+              alu_op <= ALU_OP_ARS;
               acc_sel_alu <= '1';
               acc_write_en <= '1';
 

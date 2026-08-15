@@ -54,7 +54,7 @@ begin
         when ALU_OP_RS => result <= '0' & acc(7 downto 1);
         when ALU_OP_CLS => result <= acc(6 downto 0) & acc(7);
         when ALU_OP_CRS => result <= acc(0) & acc(7 downto 1);
-        when ALU_OP_ASR => result <= acc(7) & acc(7 downto 1);
+        when ALU_OP_ARS => result <= acc(7) & acc(7 downto 1);
 
         when ALU_OP_INC =>
           res_9bit := unsigned('0' & acc) + 1;

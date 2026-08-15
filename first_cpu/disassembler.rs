@@ -87,7 +87,7 @@ fn decode_instr(instr: &mut String, raw: u16) {
             0b1001 => "rs",
             0b1010 => "cls",
             0b1011 => "crs",
-            0b1100 => "asr",
+            0b1100 => "ars",
 
             0b1101 => "inc",
             0b1110 => "dec",
