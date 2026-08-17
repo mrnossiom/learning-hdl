@@ -29,8 +29,9 @@ mul rn      0010        rn
 and rn      0011        rn
 or  rn      0100        rn
 xor rn      0101        rn
-            0110        rn ; reserved
-            0111        rn ; reserved
+
+ld acc,rn   0110        rn ; load
+st rn,acc   0111        rn ; store
 
 cp acc,rn   1000        rn ; copies acc to rn
 cp rn,acc   1001        rn ; copies rn to acc
