@@ -5,6 +5,10 @@ first_cpu.files = [
   "first_cpu/*.vhd",
 ]
 
+second_cpu.files = [
+  "second_cpu/*.vhd",
+]
+
 nand_to_basics.files = [
   "nand_to_basics/src/*.vhd",
 ]
