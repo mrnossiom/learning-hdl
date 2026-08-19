@@ -42,6 +42,8 @@
               netlistsvg
 
               vhdl-ls
+
+              hexedit
             ];
           };
         }

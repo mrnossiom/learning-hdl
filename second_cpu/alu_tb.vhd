@@ -10,7 +10,7 @@ entity alu_tb is
 end entity;
 
 architecture sim of alu_tb is
-  signal reset : std_logic;
+  signal rst, clk : std_logic;
   signal acc : cpu_word;
   signal data_bus : cpu_word;
   signal alu_op : cpu_alu_op := alu_op_add;
@@ -21,7 +21,8 @@ architecture sim of alu_tb is
 begin
   uut: entity second_cpu.alu(rtl)
     port map (
-      reset => reset,
+      clk => clk,
+      rst => rst,
       acc => acc,
       data_bus => data_bus,
       alu_op => alu_op,

@@ -7,7 +7,7 @@ use second_cpu.types.all;
 
 entity alu is
   port (
-    reset : in std_logic;
+    rst, clk : in std_logic;
 
     alu_op : in cpu_alu_op;
     acc : in cpu_word;
@@ -21,15 +21,15 @@ end entity;
 
 architecture rtl of alu is
 begin
-  process(all)
+  process(rst, clk)
     variable res_9bit : unsigned(8 downto 0);
     variable res_16bit : unsigned(15 downto 0);
   begin
-    if reset then
+    if rst then
       result <= (others => '0');
       alu_carry <= '0';
       extended_result <= (others => '0');
-    else
+    elsif rising_edge(clk) then
       result <= acc;
       alu_carry <= '0';
       extended_result <= (others => '0');

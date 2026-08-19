@@ -7,16 +7,16 @@ ghdl_flags := "--std=08 --work=second_cpu"
 src := "\
 types.vhd \
 alu.vhd \
-rom.vhd \
+ram.vhd \
+fetch.vhd \
 accumulator.vhd \
-control_unit.vhd \
+control.vhd \
 regfile.vhd \
 cpu.vhd \
 "
 
 tb_src := "\
 alu_tb.vhd \
-rom_tb.vhd \
 cpu_tb.vhd \
 "
 
@@ -31,6 +31,8 @@ run entity *args: analyze
 	just ghdl elab-run {{entity}} {{args}} --wave={{entity}}.ghw
 
 view entity: (run entity)
+	gtkwave {{entity}}.ghw
+load-view entity: (run entity)
 	gtkwave {{entity}}.ghw --script {{entity}}.tcl --rcvar 'sst_expanded off'
 
 synthesize entity *args:

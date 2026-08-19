@@ -16,48 +16,55 @@ proc add_signals {signals config} {
 
 add_signals [list \
     top.cpu_tb.clk \
-    top.cpu_tb.reset \
+    top.cpu_tb.rst \
     top.cpu_tb.uut.pc \
     top.cpu_tb.uut.next_pc \
 ] [dict create format "Binary"]
 
 add_signals [list top.cpu_tb.uut.instr] [dict create format "Hex" translator ./disassembler.rs]
 
-add_signals [list \
-    top.cpu_tb.uut.accumulator.acc_value \
-    top.cpu_tb.uut.data_bus \
-    top.cpu_tb.uut.alu.result \
-    top.cpu_tb.uut.alu_carry \
-] [dict create format "Binary"]
+# add_signals [list \
+#     top.cpu_tb.uut.accumulator.acc_value \
+#     top.cpu_tb.uut.data_bus \
+#     top.cpu_tb.uut.alu.result \
+#     top.cpu_tb.uut.alu_carry \
+# ] [dict create format "Binary"]
+
+# add_signals [list \
+#     top.cpu_tb.uut.regfile.regs\[0\] \
+#     top.cpu_tb.uut.regfile.regs\[1\] \
+#     top.cpu_tb.uut.regfile.regs\[2\] \
+#     top.cpu_tb.uut.regfile.regs\[3\] \
+#     top.cpu_tb.uut.regfile.regs\[4\] \
+#     top.cpu_tb.uut.regfile.regs\[5\] \
+#     top.cpu_tb.uut.regfile.regs\[6\] \
+#     top.cpu_tb.uut.regfile.regs\[7\] \
+#     top.cpu_tb.uut.regfile.regs\[8\] \
+#     top.cpu_tb.uut.regfile.regs\[9\] \
+#     top.cpu_tb.uut.regfile.regs\[10\] \
+#     top.cpu_tb.uut.regfile.regs\[11\] \
+#     top.cpu_tb.uut.regfile.regs\[12\] \
+#     top.cpu_tb.uut.regfile.regs\[13\] \
+#     top.cpu_tb.uut.regfile.regs\[14\] \
+#     top.cpu_tb.uut.regfile.regs\[15\] \
+# ] [dict create format "Binary" group "Registers"]
+
+# add_signals [list \
+#     top.cpu_tb.uut.acc_read_en \
+#     top.cpu_tb.uut.reg_read_en \
+#     top.cpu_tb.uut.acc_sel_alu \
+#     top.cpu_tb.uut.acc_write_en \
+#     top.cpu_tb.uut.reg_write_en \
+# ] [dict create group "R/W Signals"]
 
 add_signals [list \
-    top.cpu_tb.uut.regfile.regs\[0\] \
-    top.cpu_tb.uut.regfile.regs\[1\] \
-    top.cpu_tb.uut.regfile.regs\[2\] \
-    top.cpu_tb.uut.regfile.regs\[3\] \
-    top.cpu_tb.uut.regfile.regs\[4\] \
-    top.cpu_tb.uut.regfile.regs\[5\] \
-    top.cpu_tb.uut.regfile.regs\[6\] \
-    top.cpu_tb.uut.regfile.regs\[7\] \
-    top.cpu_tb.uut.regfile.regs\[8\] \
-    top.cpu_tb.uut.regfile.regs\[9\] \
-    top.cpu_tb.uut.regfile.regs\[10\] \
-    top.cpu_tb.uut.regfile.regs\[11\] \
-    top.cpu_tb.uut.regfile.regs\[12\] \
-    top.cpu_tb.uut.regfile.regs\[13\] \
-    top.cpu_tb.uut.regfile.regs\[14\] \
-    top.cpu_tb.uut.regfile.regs\[15\] \
-] [dict create format "Binary" group "Registers"]
-
-add_signals [list \
-    top.cpu_tb.uut.acc_read_en \
-    top.cpu_tb.uut.reg_read_en \
-    top.cpu_tb.uut.acc_sel_alu \
-    top.cpu_tb.uut.acc_write_en \
-    top.cpu_tb.uut.reg_write_en \
-] [dict create group "R/W Signals"]
-
-# skip the reset
-gtkwave::setFromEntry "10ns"
+    top.cpu_tb.uut.state \
+    top.cpu_tb.uut.fetch_start \
+    top.cpu_tb.uut.fetch_ready \
+    top.cpu_tb.uut.mem_read_en \
+    top.cpu_tb.uut.mem_write_en \
+    top.cpu_tb.uut.ram.data \
+    top.cpu_tb.uut.ram.address \
+] [dict create format "Hex"]
 
 # gtkwave::/Time/Zoom/Zoom_Full

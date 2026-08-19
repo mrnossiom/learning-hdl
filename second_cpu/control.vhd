@@ -5,9 +5,11 @@ use ieee.numeric_std.all;
 library second_cpu;
 use second_cpu.types.all;
 
-entity control_unit is
+entity control is
   port (
-    reset : in std_logic;
+    rst, clk : in std_logic;
+    state : in cpu_state;
+
     instr : in cpu_word;
 
     alu_carry : in std_logic;
@@ -31,14 +33,14 @@ entity control_unit is
 begin
 end entity;
 
-architecture rtl of control_unit is
+architecture rtl of control is
   alias opcode is instr(7 downto 4);
 
   alias reg_rn is instr(3 downto 0);
   alias imm_imm4 is instr(3 downto 0);
   alias custom_content is instr(3 downto 0);
 begin
-  process(all)
+  process(rst, clk)
   begin
     -- reset r/w flags
     alu_op <= ALU_OP_NOP;
@@ -50,9 +52,9 @@ begin
     carry_write_en <= '0';
     data_bus <= (others => 'Z');
 
-    if reset = '1' then
+    if rst then
       next_pc <= (others => '0');
-    else
+    elsif rising_edge(clk) and state = S_EXECUTE then
       next_pc <= cpu_addr(to_01(unsigned(pc) + 1));
 
       case opcode is

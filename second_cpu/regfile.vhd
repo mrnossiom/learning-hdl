@@ -22,7 +22,7 @@ architecture rtl of regfile is
 begin
   data_bus <= regs(to_integer(unsigned(read_num))) when read_en else (others => 'Z');
 
-  process(all)
+  process(clk)
   begin
     if falling_edge(clk) then
       if write_en then

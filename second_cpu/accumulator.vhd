@@ -29,9 +29,9 @@ begin
 
   acc <= acc_value;
 
-  process(all)
+  process(clk)
   begin
-    if falling_edge(clk) then
+    if rising_edge(clk) then
       if write_en then
         acc_value <= next_acc;
       end if;
