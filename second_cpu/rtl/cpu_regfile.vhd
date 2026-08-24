@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 library second_cpu;
 use second_cpu.types.all;
 
-entity regfile is
+entity cpu_regfile is
   port (
     clk : in std_logic;
     read_en, write_en : in std_logic;
@@ -14,7 +14,7 @@ entity regfile is
   );
 end entity;
 
-architecture rtl of regfile is
+architecture rtl of cpu_regfile is
     type reg_array is
       array (natural range 0 to 15) of cpu_word;
 

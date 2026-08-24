@@ -4,7 +4,7 @@ use ieee.std_logic_1164.all;
 library second_cpu;
 use second_cpu.types.all;
 
-entity accumulator is
+entity cpu_acc is
   port (
     clk : in std_logic;
 
@@ -19,7 +19,7 @@ entity accumulator is
   );
 end entity;
 
-architecture rtl of accumulator is
+architecture rtl of cpu_acc is
   signal acc_value : cpu_word := (others => '0');
   signal next_acc : cpu_word;
 begin

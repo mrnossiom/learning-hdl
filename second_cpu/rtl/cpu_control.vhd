@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 library second_cpu;
 use second_cpu.types.all;
 
-entity control is
+entity cpu_control is
   port (
     rst, clk : in std_logic;
     state : in cpu_state;
@@ -33,7 +33,7 @@ entity control is
 begin
 end entity;
 
-architecture rtl of control is
+architecture rtl of cpu_control is
   alias opcode is instr(7 downto 4);
 
   alias reg_rn is instr(3 downto 0);

@@ -5,7 +5,7 @@ use ieee.std_logic_1164.all;
 library second_cpu;
 use second_cpu.types.all;
 
-entity alu is
+entity cpu_alu is
   port (
     rst, clk : in std_logic;
 
@@ -19,7 +19,7 @@ entity alu is
   );
 end entity;
 
-architecture rtl of alu is
+architecture rtl of cpu_alu is
 begin
   process(rst, clk)
     variable res_9bit : unsigned(8 downto 0);

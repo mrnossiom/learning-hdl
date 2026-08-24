@@ -8,18 +8,16 @@ entity cpu is
   port (
     clk, rst : in std_logic;
 
-    dbg_mem : out mem_array
+    memory_address : out cpu_addr;
+    memory_strobe : out std_logic;
+    memory_mode : out mem_mode;
+    memory_ready : in std_logic;
+    memory_data : inout cpu_word
   );
 end entity;
 
 architecture rtl of cpu is
   signal state : cpu_state := S_FETCH;
-
-  signal mem_address : cpu_addr;
-  signal mem_data : cpu_word;
-  signal mem_strobe : std_logic;
-  signal mem_mode : second_cpu.types.mem_mode;
-  signal mem_ready : std_logic;
 
   signal fetch_ready : std_logic;
   signal fetch_instruction : cpu_word;
@@ -42,39 +40,22 @@ architecture rtl of cpu is
 
   signal alu_result, acc : cpu_word;
 begin
-  ram: entity second_cpu.ram(file_preloaded)
-    generic map(
-      load_filename => "ram.bin"
-    )
-    port map(
-      clk => clk,
-      rst => rst,
-
-      address => mem_address,
-      strobe => mem_strobe,
-      mode => mem_mode,
-
-      data => mem_data,
-      ready => mem_ready,
-
-      dbg_mem => dbg_mem
-    );
-
-  fetch: entity second_cpu.fetch
+  fetch_unit: entity second_cpu.cpu_fetch
     port map(
       clk => clk,
       rst => rst,
       state => state,
       pc => pc,
-      mem_address => mem_address,
-      mem_data => mem_data,
-      mem_strobe => mem_strobe,
-      mem_ready => mem_ready,
+      mem_address => memory_address,
+      mem_strobe => memory_strobe,
+      mem_mode => memory_mode,
+      mem_ready => memory_ready,
+      mem_data => memory_data,
       ready => fetch_ready,
       instruction => fetch_instruction
     );
 
-  control_unit: entity second_cpu.control
+  control_unit: entity second_cpu.cpu_control
     port map(
       clk => clk,
       rst => rst,
@@ -95,7 +76,7 @@ begin
       carry_write_en => carry_write_en
     );
 
-  regfile: entity second_cpu.regfile
+  regfile_unit: entity second_cpu.cpu_regfile
     port map(
       clk => clk,
       read_en => reg_read_en,
@@ -105,7 +86,7 @@ begin
       data_bus => data_bus
   );
 
-  accumulator: entity second_cpu.accumulator
+  acc_unit: entity second_cpu.cpu_acc
     port map(
       clk => clk,
       read_en => acc_read_en,
@@ -116,7 +97,7 @@ begin
       acc => acc
     );
 
-  alu: entity second_cpu.alu
+  alu_unit: entity second_cpu.cpu_alu
     port map(
       clk => clk,
       rst => rst,

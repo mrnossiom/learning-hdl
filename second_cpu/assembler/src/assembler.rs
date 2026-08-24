@@ -1,10 +1,3 @@
-#!/usr/bin/env -S cargo +nightly -Zscript
----
-package.edition = "2024"
-[dependencies]
-clap = { version = "4", features = ["derive"] }
----
-
 use std::collections::BTreeMap;
 use std::io::Write;
 use std::path::{Path, PathBuf};
@@ -128,7 +121,9 @@ impl<const N: usize> std::str::FromStr for Imm<N> {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let bytes = s.as_bytes();
 
-        let raw_value = if let Some(b'0') = bytes.get(0) && bytes.len() > 1 {
+        let raw_value = if let Some(b'0') = bytes.get(0)
+            && bytes.len() > 1
+        {
             let radix = match bytes.get(1) {
                 Some(b'x') => 16,
                 Some(b'o') => 8,

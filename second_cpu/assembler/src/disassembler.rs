@@ -1,8 +1,3 @@
-#!/usr/bin/env -S cargo +nightly -Zscript
----
-package.edition = "2024"
----
-
 use std::io;
 use std::io::{BufRead, Write};
 

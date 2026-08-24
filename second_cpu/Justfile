@@ -5,19 +5,21 @@ ghdl_flags := "--std=08 --work=second_cpu"
 
 # order matters
 src := "\
-types.vhd \
-alu.vhd \
-ram.vhd \
-fetch.vhd \
-accumulator.vhd \
-control.vhd \
-regfile.vhd \
-cpu.vhd \
+rtl/types.vhd \
+\
+rtl/cpu_alu.vhd \
+rtl/cpu_fetch.vhd \
+rtl/cpu_acc.vhd \
+rtl/cpu_control.vhd \
+rtl/cpu_regfile.vhd \
+rtl/cpu.vhd \
+\
+rtl/ram.vhd \
+rtl/chip.vhd \
 "
 
 tb_src := "\
-alu_tb.vhd \
-cpu_tb.vhd \
+rtl/tests/chip.vhd \
 "
 
 [private]
@@ -50,5 +52,5 @@ synthesize entity *args:
 
 clean:
 	@just ghdl remove
-	@rm -vf *.vcf *.ghw
+	@rm -vf *.vcf *.ghw *.bin
 	@rm -vf *.netlist.svg *.netlist.json

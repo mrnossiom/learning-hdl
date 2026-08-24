@@ -6,7 +6,7 @@ use ieee.numeric_std.all;
 library second_cpu;
 use second_cpu.types.all;
 
-entity fetch is
+entity cpu_fetch is
   port (
     rst, clk : in std_logic;
     state : in cpu_state;
@@ -24,7 +24,7 @@ entity fetch is
   );
 end entity;
 
-architecture rtl of fetch is
+architecture rtl of cpu_fetch is
   type fetch_state is (IDLE, MEM_WAIT, DONE);
   signal fstate : fetch_state := IDLE;
 begin

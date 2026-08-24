@@ -10,7 +10,7 @@ use second_cpu.types.all;
 entity ram is
   generic (
     latency : natural := 2;
-    load_filename : string
+    memory_file : string
   );
   port (
     clk, rst : in std_logic;
@@ -18,7 +18,6 @@ entity ram is
     address : in cpu_addr;
     strobe : in std_logic;
     mode : in mem_mode;
-
     ready : out std_logic;
     data : inout cpu_word;
 
@@ -27,7 +26,7 @@ entity ram is
 end entity;
 
 architecture file_preloaded of ram is
-  signal memory : mem_array := load_memory_from_file(load_filename);
+  signal memory : mem_array := load_memory_from_file(memory_file);
 
   type mem_state is (IDLE, BUSY, DONE);
   signal mstate : mem_state := IDLE;
