@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-unstable";
+    nixpkgs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz";
   };
 
   outputs =
@@ -36,12 +36,14 @@
 
               ghdl
               gtkwave
-              (yosys.withPlugins [ yosys-ghdl ])
+              # (yosys.withPlugins [ yosys-ghdl ])
 
               xdot # needed by yosys to show graphs
               netlistsvg
 
               vhdl-ls
+
+              swim
             ];
           };
         }
